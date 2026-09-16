@@ -74,3 +74,7 @@ Notes worth knowing:
 ## Status
 
 Early (0.1). Works, but the visual design is still being tuned.
+
+## License
+
+[MIT](LICENSE)
