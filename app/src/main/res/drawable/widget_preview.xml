@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Static stand-in for the rendered face: shown in the widget picker and before the first render. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+
+    <!-- Cookie background -->
+    <path
+        android:fillColor="@android:color/system_accent1_100"
+        android:pathData="M89.6,11.4Q100.0,0.0 110.4,11.4L110.4,11.4Q120.7,22.7 135.4,18.1L135.4,18.1Q150.0,13.4 153.3,28.4L153.3,28.4Q156.6,43.4 171.6,46.7L171.6,46.7Q186.6,50.0 181.9,64.6L181.9,64.6Q177.3,79.3 188.6,89.6L188.6,89.6Q200.0,100.0 188.6,110.4L188.6,110.4Q177.3,120.7 181.9,135.4L181.9,135.4Q186.6,150.0 171.6,153.3L171.6,153.3Q156.6,156.6 153.3,171.6L153.3,171.6Q150.0,186.6 135.4,181.9L135.4,181.9Q120.7,177.3 110.4,188.6L110.4,188.6Q100.0,200.0 89.6,188.6L89.6,188.6Q79.3,177.3 64.6,181.9L64.6,181.9Q50.0,186.6 46.7,171.6L46.7,171.6Q43.4,156.6 28.4,153.3L28.4,153.3Q13.4,150.0 18.1,135.4L18.1,135.4Q22.7,120.7 11.4,110.4L11.4,110.4Q0.0,100.0 11.4,89.6L11.4,89.6Q22.7,79.3 18.1,64.6L18.1,64.6Q13.4,50.0 28.4,46.7L28.4,46.7Q43.4,43.4 46.7,28.4L46.7,28.4Q50.0,13.4 64.6,18.1L64.6,18.1Q79.3,22.7 89.6,11.4Z" />
+
+    <!-- Twilight line -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M36.2,94.4 A64,64 0 1 1 158.0,127.0"
+        android:strokeWidth="2.5"
+        android:strokeColor="@android:color/system_neutral2_500"
+        android:strokeLineCap="round" />
+
+    <!-- Daylight track -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M38.2,83.4 A64,64 0 1 1 161.8,116.6"
+        android:strokeWidth="19"
+        android:strokeColor="@android:color/system_neutral2_500"
+        android:strokeLineCap="round" />
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M38.2,83.4 A64,64 0 1 1 161.8,116.6"
+        android:strokeWidth="14"
+        android:strokeColor="@android:color/system_accent1_100"
+        android:strokeLineCap="round" />
+
+    <!-- Sun at ~15:00 with catchlight -->
+    <path
+        android:fillColor="@android:color/system_accent1_600"
+        android:pathData="M145,55 m-10.5,0 a10.5,10.5 0 1 0 21,0 a10.5,10.5 0 1 0 -21,0" />
+    <path
+        android:fillColor="#E6FFFFFF"
+        android:pathData="M141,51 m-2.5,0 a2.5,2.5 0 1 0 5,0 a2.5,2.5 0 1 0 -5,0" />
+</vector>

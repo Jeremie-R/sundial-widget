@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  2x2 cells minimum (70dp per cell minus 30dp of margins), freely resizable.
+  updatePeriodMillis is only a coarse 30-minute safety net; SundialUpdateScheduler
+  drives the real cadence. The configure activity is optional (defaults apply on add)
+  and reachable later via the launcher's reconfigure affordance.
+-->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:configure="com.roberrini.sundial.MainActivity"
+    android:description="@string/widget_description"
+    android:initialLayout="@layout/widget_sundial"
+    android:minWidth="110dp"
+    android:minHeight="110dp"
+    android:minResizeWidth="110dp"
+    android:minResizeHeight="110dp"
+    android:targetCellWidth="2"
+    android:targetCellHeight="2"
+    android:previewImage="@drawable/widget_preview"
+    android:previewLayout="@layout/widget_sundial"
+    android:resizeMode="horizontal|vertical"
+    android:updatePeriodMillis="1800000"
+    android:widgetCategory="home_screen"
+    android:widgetFeatures="reconfigurable|configuration_optional" />

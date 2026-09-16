@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Widget colours mapped onto the Material You tonal palettes (light theme), following the
+  design mock: primary-container surface, primary text. Tone key: system_*_100 = tone 90,
+  system_*_600 = tone 40, system_*_900 = tone 10.
+-->
+<resources>
+    <color name="widget_surface">@android:color/system_accent1_100</color>
+    <color name="widget_on_surface">@android:color/system_accent1_600</color>
+    <color name="widget_on_surface_variant">@android:color/system_accent1_600</color>
+
+    <color name="ic_launcher_background">#1F3A5F</color>
+</resources>

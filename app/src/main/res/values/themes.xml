@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dynamic colours are applied in MainActivity via DynamicColors.applyToActivityIfAvailable(). -->
+    <style name="Theme.Sundial" parent="Theme.Material3.DayNight.NoActionBar" />
+</resources>

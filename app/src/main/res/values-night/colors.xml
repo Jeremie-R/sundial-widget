@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Dark-theme counterparts of values/colors.xml: tone 30 surface, tone 80 text. -->
+<resources>
+    <color name="widget_surface">@android:color/system_accent1_700</color>
+    <color name="widget_on_surface">@android:color/system_accent1_200</color>
+    <color name="widget_on_surface_variant">@android:color/system_accent1_200</color>
+</resources>

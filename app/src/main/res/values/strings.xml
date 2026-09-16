@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Sundial</string>
+    <string name="widget_label">Sundial clock</string>
+    <string name="widget_description">A minimalist sun-path clock that follows your wallpaper colours.</string>
+
+    <string name="preview_description">Preview of the widget</string>
+    <string name="appearance_title">Appearance</string>
+    <string name="row_style">Style</string>
+    <string name="row_shape">Background</string>
+    <string name="row_hue">Colours</string>
+    <string name="row_theme">Theme</string>
+    <string name="row_night">Sun at night</string>
+    <string name="row_sparkles">Night sparkles</string>
+    <string name="look_pillow">Pillow</string>
+    <string name="look_bold">Bold</string>
+    <string name="look_line">Line</string>
+    <string name="look_high_contrast">High contrast</string>
+    <string name="look_beads">Beads</string>
+    <string name="shape_none">None</string>
+    <string name="shape_circle">Circle</string>
+    <string name="shape_squircle">Squircle</string>
+    <string name="shape_cookie12">Cookie 12</string>
+    <string name="shape_cookie9">Cookie 9</string>
+    <string name="shape_cookie7">Cookie 7</string>
+    <string name="shape_cookie4">Cookie 4</string>
+    <string name="shape_clover8">Clover 8</string>
+    <string name="shape_sunny">Sunny</string>
+    <string name="shape_burst">Burst</string>
+    <string name="night_outline">Outline</string>
+    <string name="night_moon">Moon</string>
+    <string name="night_hidden">Hidden</string>
+    <string name="hue_device">From your device theme</string>
+    <string name="hue_teal">Teal</string>
+    <string name="hue_sky">Sky</string>
+    <string name="hue_lavender">Lavender</string>
+    <string name="hue_rose">Rose</string>
+    <string name="hue_peach">Peach</string>
+    <string name="hue_lime">Lime</string>
+    <string name="theme_auto">Auto (follow system)</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+
+    <string name="location_title">Sunrise and sunset for</string>
+    <string name="loc_device">Your approximate location</string>
+    <string name="loc_device_available">Tap to use it</string>
+    <string name="loc_device_waiting">Waiting for a location fix…</string>
+    <string name="loc_device_denied">Location permission not granted</string>
+    <string name="loc_near">Near %1$s</string>
+    <string name="loc_city">A city you choose</string>
+    <string name="loc_city_none">No city chosen</string>
+    <string name="sun_summary">Today: sunrise %1$s · sunset %2$s</string>
+    <string name="sun_summary_default">No location yet — the dial shows a 07:00–19:00 day</string>
+    <string name="sun_all_day">Today the sun doesn\'t set</string>
+    <string name="sun_none">Today the sun doesn\'t rise</string>
+    <string name="choose_city">Choose a city</string>
+    <string name="search_cities">Search cities</string>
+    <string name="perm_denied_title">Location is off for Sundial</string>
+    <string name="perm_denied_body">Allow approximate location for Sundial in system settings, or choose a city instead.</string>
+    <string name="perm_denied_use_city">Use a city</string>
+    <string name="open_settings">Open settings</string>
+
+    <string name="tap_action_title">When you tap the widget</string>
+    <string name="tap_open_clock">Open the clock app</string>
+    <string name="tap_open_app">Open another app</string>
+    <string name="tap_none">Do nothing</string>
+    <string name="no_clock_app">No clock app found</string>
+    <string name="no_app_chosen">No app chosen</string>
+    <string name="choose_app">Choose an app</string>
+    <string name="done">Done</string>
+    <string name="add_widget">Add widget</string>
+    <string name="pin_unsupported">Your launcher doesn\'t support pinning widgets from apps. Use its widget picker instead.</string>
+</resources>
