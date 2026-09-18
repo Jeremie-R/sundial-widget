@@ -10,6 +10,7 @@ import com.roberrini.sundial.render.NightSun
 import com.roberrini.sundial.render.Shape
 import com.roberrini.sundial.render.SundialColors
 import com.roberrini.sundial.render.SundialStyle
+import com.roberrini.sundial.render.TwilightBar
 
 /** Where the widget's colours come from: the device's own Material You palette, or a fixed hue. */
 enum class HuePreset(@param:StringRes val label: Int, val degrees: Double?) {
@@ -34,6 +35,7 @@ object AppearanceSettings {
     private const val PREFS = "sundial"
     private const val KEY_LOOK = "look"
     private const val KEY_SHAPE = "shape"
+    private const val KEY_TWILIGHT_BAR = "twilight_bar"
     private const val KEY_NIGHT_SUN = "night_sun"
     private const val KEY_SPARKLES = "sparkles"
     private const val KEY_HUE = "hue"
@@ -45,6 +47,7 @@ object AppearanceSettings {
         return SundialStyle(
             look = p.enum(KEY_LOOK, defaults.look),
             shape = p.enum(KEY_SHAPE, defaults.shape),
+            twilightBar = p.enum(KEY_TWILIGHT_BAR, defaults.twilightBar),
             nightSun = p.enum(KEY_NIGHT_SUN, defaults.nightSun),
             sparkles = p.getBoolean(KEY_SPARKLES, defaults.sparkles),
         )
@@ -52,6 +55,7 @@ object AppearanceSettings {
 
     fun setLook(context: Context, look: Look) = prefs(context).edit { putString(KEY_LOOK, look.name) }
     fun setShape(context: Context, shape: Shape) = prefs(context).edit { putString(KEY_SHAPE, shape.name) }
+    fun setTwilightBar(context: Context, bar: TwilightBar) = prefs(context).edit { putString(KEY_TWILIGHT_BAR, bar.name) }
     fun setNightSun(context: Context, nightSun: NightSun) = prefs(context).edit { putString(KEY_NIGHT_SUN, nightSun.name) }
     fun setSparkles(context: Context, on: Boolean) = prefs(context).edit { putBoolean(KEY_SPARKLES, on) }
 

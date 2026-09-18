@@ -10,6 +10,9 @@
     <string name="row_shape">Background</string>
     <string name="row_hue">Colours</string>
     <string name="row_theme">Theme</string>
+    <string name="row_twilight">Twilight bar</string>
+    <string name="twilight_plain">Plain</string>
+    <string name="twilight_fading">Fading by twilight</string>
     <string name="row_night">Sun at night</string>
     <string name="row_sparkles">Night sparkles</string>
     <string name="look_pillow">Pillow</string>

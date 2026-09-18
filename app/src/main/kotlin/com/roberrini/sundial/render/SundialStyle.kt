@@ -33,10 +33,19 @@ enum class NightSun(@param:StringRes val label: Int) {
     HIDDEN(R.string.night_hidden),
 }
 
+/** How the thin bar from the daylight track out to astronomical dawn/dusk is drawn. */
+enum class TwilightBar(@param:StringRes val label: Int) {
+    /** One uniform line all the way. */
+    PLAIN(R.string.twilight_plain),
+    /** Three bands (civil, nautical, astronomical) fading outward. */
+    FADING(R.string.twilight_fading),
+}
+
 /** Everything about the dial's appearance that isn't a colour. */
 data class SundialStyle(
     val look: Look = Look.PILLOW,
     val shape: Shape = Shape.COOKIE_12,
+    val twilightBar: TwilightBar = TwilightBar.PLAIN,
     val nightSun: NightSun = NightSun.OUTLINE,
     val sparkles: Boolean = false,
 )

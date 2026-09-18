@@ -40,6 +40,7 @@
         <include android:id="@+id/row_shape" layout="@layout/row_setting" />
         <include android:id="@+id/row_hue" layout="@layout/row_setting" />
         <include android:id="@+id/row_theme" layout="@layout/row_setting" />
+        <include android:id="@+id/row_twilight" layout="@layout/row_setting" />
         <include android:id="@+id/row_night" layout="@layout/row_setting" />
 
         <com.google.android.material.materialswitch.MaterialSwitch

@@ -22,8 +22,8 @@ import kotlin.math.sin
  *
  * The face is a 24h dial: midnight at the bottom, noon at the top, time running
  * clockwise. Today's daylight is drawn from sunrise to sunset; a thinner bar extends it
- * to astronomical dawn and dusk, fading through the civil, nautical and astronomical
- * twilights; the night is left blank. The sun sits on the same circle at the current
+ * to astronomical dawn and dusk (plain, or fading through the civil, nautical and
+ * astronomical twilights); the night is left blank. The sun sits on the same circle at the current
  * time, filled while above the horizon. The centre is left empty for the time and date
  * the widget layout overlays (or [TextOverlay] paints, for previews).
  *
@@ -127,24 +127,33 @@ object SundialRenderer {
                     }
                 }
                 Look.HIGH_CONTRAST -> {
-                    // No fade here: contrast beats nuance.
+                    // Never fades: contrast beats nuance.
                     drawSpan(sun.astronomical, stroke(size * 0.015f, c.ink))
                     drawSpan(daylight, stroke(size * 0.045f, c.ink))
                 }
                 Look.BEADS -> {
-                    drawBeads(sun.astronomical, 13f / 1440f, size * 0.006f, ColorUtils.setAlphaComponent(c.outline, 0x80), skip = sun.nautical)
-                    drawBeads(sun.nautical, 13f / 1440f, size * 0.007f, ColorUtils.setAlphaComponent(c.outline, 0xC0), skip = sun.civil)
-                    drawBeads(sun.civil, 13f / 1440f, size * 0.008f, c.outline, skip = daylight)
+                    if (style.twilightBar == TwilightBar.FADING) {
+                        drawBeads(sun.astronomical, 13f / 1440f, size * 0.006f, ColorUtils.setAlphaComponent(c.outline, 0x80), skip = sun.nautical)
+                        drawBeads(sun.nautical, 13f / 1440f, size * 0.007f, ColorUtils.setAlphaComponent(c.outline, 0xC0), skip = sun.civil)
+                        drawBeads(sun.civil, 13f / 1440f, size * 0.008f, c.outline, skip = daylight)
+                    } else {
+                        drawBeads(sun.astronomical, 13f / 1440f, size * 0.008f, c.outline, skip = daylight)
+                    }
                     drawBeads(daylight, 30f / 1440f, size * 0.016f, c.primary, skip = null)
                 }
             }
         }
 
         /**
-         * The twilight bar: astronomical, nautical and civil spans painted over each other,
-         * so the line is faint at the ends and solid (at [alpha]) next to the daylight track.
+         * The twilight bar out to astronomical dawn/dusk: one uniform line at [alpha], or
+         * the astronomical, nautical and civil spans painted over each other so the line
+         * is faint at the ends and solid next to the daylight track.
          */
         private fun drawTwilightBar(width: Float, color: Int, alpha: Int) {
+            if (style.twilightBar == TwilightBar.PLAIN) {
+                drawSpan(sun.astronomical, stroke(width, ColorUtils.setAlphaComponent(color, alpha)))
+                return
+            }
             drawSpan(sun.astronomical, stroke(width, ColorUtils.setAlphaComponent(color, alpha * 2 / 5)))
             drawSpan(sun.nautical, stroke(width, ColorUtils.setAlphaComponent(color, alpha * 7 / 10)))
             drawSpan(sun.civil, stroke(width, ColorUtils.setAlphaComponent(color, alpha)))

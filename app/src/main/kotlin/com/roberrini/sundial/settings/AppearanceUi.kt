@@ -22,6 +22,7 @@ import com.roberrini.sundial.render.Shape
 import com.roberrini.sundial.render.SundialColors
 import com.roberrini.sundial.render.SundialRenderer
 import com.roberrini.sundial.render.SundialStyle
+import com.roberrini.sundial.render.TwilightBar
 import com.roberrini.sundial.sun.SunTimesProvider
 import com.roberrini.sundial.time.DayProgress
 import java.time.LocalDate
@@ -47,6 +48,7 @@ class AppearanceUi(
     private val rowShape = Row(root.findViewById(R.id.row_shape), R.string.row_shape) { pickShape() }
     private val rowHue = Row(root.findViewById(R.id.row_hue), R.string.row_hue) { pickHue() }
     private val rowTheme = Row(root.findViewById(R.id.row_theme), R.string.row_theme) { pickTheme() }
+    private val rowTwilight = Row(root.findViewById(R.id.row_twilight), R.string.row_twilight) { pickTwilightBar() }
     private val rowNight = Row(root.findViewById(R.id.row_night), R.string.row_night) { pickNightSun() }
     private val sparkles: MaterialSwitch = root.findViewById(R.id.sparkles_switch)
 
@@ -65,6 +67,7 @@ class AppearanceUi(
         rowShape.value(context.getString(style.shape.label))
         rowHue.value(context.getString(AppearanceSettings.huePreset(context).label))
         rowTheme.value(context.getString(AppearanceSettings.themeMode(context).label))
+        rowTwilight.value(context.getString(style.twilightBar.label))
         rowNight.value(context.getString(style.nightSun.label))
         sparkles.isChecked = style.sparkles
         preview.setImageBitmap(renderSample(dp(PREVIEW_DP), style, AppearanceSettings.colors(context)))
@@ -127,6 +130,11 @@ class AppearanceUi(
         R.string.row_theme, ThemeMode.entries.map { context.getString(it.label) },
         ThemeMode.entries.indexOf(AppearanceSettings.themeMode(context)),
     ) { AppearanceSettings.setThemeMode(context, ThemeMode.entries[it]); changed() }
+
+    private fun pickTwilightBar() = choiceDialog(
+        R.string.row_twilight, TwilightBar.entries.map { context.getString(it.label) },
+        TwilightBar.entries.indexOf(AppearanceSettings.style(context).twilightBar),
+    ) { AppearanceSettings.setTwilightBar(context, TwilightBar.entries[it]); changed() }
 
     private fun pickNightSun() = choiceDialog(
         R.string.row_night, NightSun.entries.map { context.getString(it.label) },
