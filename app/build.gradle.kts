@@ -19,8 +19,8 @@ android {
         // Android 12: needed for Material You dynamic color (system_accent1_* etc.).
         minSdk = 31
         targetSdk = 37
-        versionCode = 1
-        versionName = "0.1"
+        versionCode = 2
+        versionName = "0.2"
     }
 
     signingConfigs {
