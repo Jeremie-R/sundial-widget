@@ -17,14 +17,18 @@ object SunCalculator {
     /** Zenith angle for sunrise/sunset: 90° plus refraction and the solar disc's radius. */
     private const val ZENITH_SUNRISE = 90.833
 
-    /** Civil twilight: sun centre 6° below the horizon. */
+    /** Twilights: sun centre 6°, 12° and 18° below the horizon. */
     private const val ZENITH_CIVIL = 96.0
+    private const val ZENITH_NAUTICAL = 102.0
+    private const val ZENITH_ASTRONOMICAL = 108.0
 
     fun compute(latitude: Double, longitude: Double, date: LocalDate, zone: ZoneId): SunTimes {
         val offsetMinutes = zone.rules.getOffset(date.atStartOfDay(zone).toInstant()).totalSeconds / 60
         return SunTimes(
             daylight = span(latitude, longitude, date, ZENITH_SUNRISE, offsetMinutes),
-            twilight = span(latitude, longitude, date, ZENITH_CIVIL, offsetMinutes),
+            civil = span(latitude, longitude, date, ZENITH_CIVIL, offsetMinutes),
+            nautical = span(latitude, longitude, date, ZENITH_NAUTICAL, offsetMinutes),
+            astronomical = span(latitude, longitude, date, ZENITH_ASTRONOMICAL, offsetMinutes),
         )
     }
 

@@ -2,7 +2,7 @@
 
 A minimalist sun-path clock widget for Android, styled with Material You.
 
-Instead of hands, a 24-hour dial shows today's sun: an arc from sunrise to sunset, a thin line through twilight, and nothing at night. A small sun moves along it through the day. The colours come from your wallpaper.
+Instead of hands, a 24-hour dial shows today's sun: an arc from sunrise to sunset, a thin bar fading out through civil, nautical and astronomical twilight, and nothing at night. A small sun moves along it through the day. The colours come from your wallpaper.
 
 <p align="center">
   <img src="docs/widget-light.png" width="300" alt="Sundial widget, light theme">
@@ -11,8 +11,8 @@ Instead of hands, a 24-hour dial shows today's sun: an arc from sunrise to sunse
 
 ## What it does
 
-- **24-hour dial** — midnight at the bottom, noon at the top. The daylight track runs from today's real sunrise to sunset, the thin line extends through civil twilight, the night stays blank.
-- **Real sun times** — computed on-device with the NOAA solar algorithm from your approximate location (or a city you choose). No network, no accounts.
+- **24-hour dial** — midnight at the bottom, noon at the top. The daylight track runs from today's real sunrise to sunset; the thin bar extends it to astronomical dawn and dusk, fading through the civil (−6°), nautical (−12°) and astronomical (−18°) twilights; the night stays blank. The sun is filled while above the horizon.
+- **Real sun times** — computed on-device with the NOAA solar algorithm from your approximate location (or a city you choose), recomputed for the current date at every refresh. No network, no accounts.
 - **Material You** — reads the system's dynamic colour palette, follows light/dark, and rounds to the launcher's corner radius. Or pick a fixed hue preset.
 - **Your style** — five looks (Pillow, Bold, Line, High contrast, Beads), ten background shapes (Material You cookies, clover, sunny, burst, circle, squircle, or none), sun-at-night as outline / moon / hidden, optional night sparkles.
 - **Tap to open** the clock app, any app you choose, or nothing.
@@ -52,7 +52,7 @@ Widgets can't host arbitrary drawing, so the face is rendered to a bitmap and sh
 AlarmManager (every 15 min, inexact, non-wakeup)
   └─ SundialWidgetProvider ─▶ SundialWidgetUpdater
         ├─ DayProgress.now()            time of day → 0..1
-        ├─ SunTimesProvider.today()     location → NOAA → daylight / twilight spans
+        ├─ SunTimesProvider.today()     location + today's date → NOAA → daylight / twilight spans
         ├─ AppearanceSettings           look, shape, colours, theme
         └─ SundialRenderer.render(...)  pure Canvas → Bitmap, one per widget size
 ```
@@ -60,7 +60,7 @@ AlarmManager (every 15 min, inexact, non-wakeup)
 | Piece | Where |
 |---|---|
 | Drawing (no Android component dependencies, testable on its own) | `render/SundialRenderer.kt`, `render/Shapes.kt`, `render/SundialColors.kt` |
-| Sunrise / sunset / civil twilight (NOAA), polar day and night handled | `sun/SunCalculator.kt` |
+| Sunrise / sunset and the three twilights (NOAA), polar day and night handled | `sun/SunCalculator.kt` |
 | Location: approximate permission with a city-list fallback | `location/` |
 | Widget plumbing: provider, updater, alarm, boot / time-change receiver | `widget/` |
 | Settings and the widget's reconfigure screen | `MainActivity.kt`, `settings/` |

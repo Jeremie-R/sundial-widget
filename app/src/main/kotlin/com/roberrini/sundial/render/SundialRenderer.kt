@@ -21,10 +21,11 @@ import kotlin.math.sin
  * for the widget from the same function.
  *
  * The face is a 24h dial: midnight at the bottom, noon at the top, time running
- * clockwise. Today's daylight is drawn from sunrise to sunset, a thinner treatment
- * extends it through civil twilight, and the night is left blank. The sun sits on the
- * same circle at the current time. The centre is left empty for the time and date the
- * widget layout overlays (or [TextOverlay] paints, for previews).
+ * clockwise. Today's daylight is drawn from sunrise to sunset; a thinner bar extends it
+ * to astronomical dawn and dusk, fading through the civil, nautical and astronomical
+ * twilights; the night is left blank. The sun sits on the same circle at the current
+ * time, filled while above the horizon. The centre is left empty for the time and date
+ * the widget layout overlays (or [TextOverlay] paints, for previews).
  *
  * Geometry is expressed as fractions of the shorter bitmap edge, matching the design
  * lab's 200-unit box, so every size renders the same picture.
@@ -105,20 +106,19 @@ object SundialRenderer {
         }
 
         private fun drawArcs() {
-            val twilight = sun.twilight
             val daylight = sun.daylight
             when (look) {
                 Look.PILLOW -> {
-                    drawSpan(twilight, stroke(size * 0.0125f, c.outline))
+                    drawTwilightBar(size * 0.0125f, c.outline, 0xFF)
                     drawSpan(daylight, stroke(size * 0.095f, c.outline))
                     drawSpan(daylight, stroke(size * 0.07f, ground))
                 }
                 Look.BOLD -> {
-                    drawSpan(twilight, stroke(size * 0.025f, ColorUtils.setAlphaComponent(c.primary, 0x59)))
+                    drawTwilightBar(size * 0.025f, c.primary, 0x59)
                     drawSpan(daylight, stroke(size * 0.065f, c.primary))
                 }
                 Look.LINE -> {
-                    drawSpan(twilight, stroke(size * 0.0075f, c.outlineVariant))
+                    drawTwilightBar(size * 0.0075f, c.outlineVariant, 0xFF)
                     drawSpan(daylight, stroke(size * 0.015f, c.primary))
                     val tick = stroke(size * 0.0075f, c.outline)
                     for (mark in floatArrayOf(0.25f, 0.75f)) {
@@ -127,14 +127,27 @@ object SundialRenderer {
                     }
                 }
                 Look.HIGH_CONTRAST -> {
-                    drawSpan(twilight, stroke(size * 0.015f, c.ink))
+                    // No fade here: contrast beats nuance.
+                    drawSpan(sun.astronomical, stroke(size * 0.015f, c.ink))
                     drawSpan(daylight, stroke(size * 0.045f, c.ink))
                 }
                 Look.BEADS -> {
-                    drawBeads(twilight, 13f / 1440f, size * 0.008f, c.outline, skip = daylight)
+                    drawBeads(sun.astronomical, 13f / 1440f, size * 0.006f, ColorUtils.setAlphaComponent(c.outline, 0x80), skip = sun.nautical)
+                    drawBeads(sun.nautical, 13f / 1440f, size * 0.007f, ColorUtils.setAlphaComponent(c.outline, 0xC0), skip = sun.civil)
+                    drawBeads(sun.civil, 13f / 1440f, size * 0.008f, c.outline, skip = daylight)
                     drawBeads(daylight, 30f / 1440f, size * 0.016f, c.primary, skip = null)
                 }
             }
+        }
+
+        /**
+         * The twilight bar: astronomical, nautical and civil spans painted over each other,
+         * so the line is faint at the ends and solid (at [alpha]) next to the daylight track.
+         */
+        private fun drawTwilightBar(width: Float, color: Int, alpha: Int) {
+            drawSpan(sun.astronomical, stroke(width, ColorUtils.setAlphaComponent(color, alpha * 2 / 5)))
+            drawSpan(sun.nautical, stroke(width, ColorUtils.setAlphaComponent(color, alpha * 7 / 10)))
+            drawSpan(sun.civil, stroke(width, ColorUtils.setAlphaComponent(color, alpha)))
         }
 
         private fun drawBeads(span: DaySpan, step: Float, r: Float, color: Int, skip: DaySpan?) {
@@ -159,7 +172,7 @@ object SundialRenderer {
             }
             val paint = fill(ColorUtils.setAlphaComponent(color, 0xCC))
             for ((tt, rr, sz) in SPARKLES) {
-                if (sun.twilight.contains(tt)) continue
+                if (sun.astronomical.contains(tt)) continue
                 val (x, y) = point(tt, radius * rr)
                 canvas.drawPath(Shapes.sparkle(x, y, size * sz), paint)
             }
@@ -174,7 +187,8 @@ object SundialRenderer {
                 Look.HIGH_CONTRAST -> 0.06f
                 Look.BEADS -> 0.055f
             }
-            val isNight = !sun.twilight.contains(t)
+            // Filled only while above the horizon; below it, the night treatment applies.
+            val isNight = !sun.daylight.contains(t)
             if (!isNight) {
                 when (look) {
                     Look.PILLOW -> filledSun(sx, sy, sunRadius, c.primary, catchlight = true)
@@ -268,12 +282,6 @@ object SundialRenderer {
             }
         }
 
-        private fun DaySpan.contains(tt: Float): Boolean = when (this) {
-            DaySpan.All -> true
-            DaySpan.None -> false
-            is DaySpan.Between -> if (start <= end) tt in start..end else tt >= start || tt <= end
-        }
-
         private fun stroke(strokeWidth: Float, color: Int) = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             style = Paint.Style.STROKE
             strokeCap = Paint.Cap.ROUND
@@ -294,7 +302,7 @@ object SundialRenderer {
     const val TIME_TEXT = 0.17f
     const val DATE_TEXT = 0.0625f
 
-    /** Night sparkles: (time of day, radius multiplier, size fraction). Skipped if inside twilight. */
+    /** Night sparkles: (time of day, radius multiplier, size fraction). Skipped if inside the twilight bar. */
     private val SPARKLES = listOf(
         Triple(0.035f, 0.94f, 0.017f), Triple(0.11f, 1.08f, 0.013f), Triple(0.19f, 0.90f, 0.015f),
         Triple(0.82f, 1.06f, 0.013f), Triple(0.90f, 0.92f, 0.017f), Triple(0.965f, 1.10f, 0.012f),
