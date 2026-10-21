@@ -18,7 +18,7 @@ The app behind it shows the same dial with today's sun and moon in full, and kee
 - **Material You** — reads the system's dynamic colour palette, follows light/dark, and rounds to the launcher's corner radius. Or pick a fixed hue preset.
 - **Your style** — five looks (Pillow, Bold, Line, High contrast, Beads), ten background shapes (Material You cookies, clover, sunny, burst, circle, squircle, or none), sun-at-night as outline / moon / hidden, optional night sparkles.
 - **A home screen** with the live dial, today's sunrise, sunset, daylight length and all three twilights, plus the moon's phase, how much of it is lit, and when it rises and sets.
-- **Shortcuts** straight to your clock app's alarms or timers — or any app you choose. The widget tap and both buttons are configurable.
+- **Shortcuts** — tapping the widget opens the app, and the two buttons go straight to your clock app's alarms and timers. All three are configurable, and can point at any app instead, or at nothing.
 - **Battery-friendly** — the digital time is a `TextClock` that ticks by itself; the sun only needs a re-render every 15 minutes, done with an inexact, non-wakeup alarm.
 
 <p align="center">
@@ -84,7 +84,7 @@ Notes worth knowing:
 
 ## Status
 
-Early (0.3). Works, but the visual design is still being tuned.
+Early (0.3.1). Works, but the visual design is still being tuned.
 
 ## License
 

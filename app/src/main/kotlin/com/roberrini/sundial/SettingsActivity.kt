@@ -253,7 +253,14 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun pickAction(slot: ActionSlot) {
         val current = LaunchAction.load(this, slot)
-        val choices = listOf(LaunchAction.ShowAlarms, LaunchAction.ShowTimers, null, LaunchAction.None)
+        // Opening Sundial is offered for the widget only: from a button you are already here.
+        val choices = buildList {
+            if (slot == ActionSlot.WIDGET_TAP) add(LaunchAction.OpenSundial)
+            add(LaunchAction.ShowAlarms)
+            add(LaunchAction.ShowTimers)
+            add(null)
+            add(LaunchAction.None)
+        }
         val labels = choices.map { choice ->
             when (choice) {
                 // The "another app" row doubles as the current app's name once one is chosen.
@@ -262,7 +269,7 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
         val checked = when (current) {
-            is LaunchAction.OpenApp -> 2
+            is LaunchAction.OpenApp -> choices.indexOf(null)
             else -> choices.indexOf(current)
         }
         MaterialAlertDialogBuilder(this)

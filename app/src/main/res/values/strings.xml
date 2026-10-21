@@ -68,6 +68,7 @@
     <string name="slot_widget_tap">Tapping the widget</string>
     <string name="slot_button_primary">First button</string>
     <string name="slot_button_secondary">Second button</string>
+    <string name="action_open_app">Open the app</string>
     <string name="action_alarms">Alarms</string>
     <string name="action_timers">Timers</string>
     <string name="action_none">Nothing</string>

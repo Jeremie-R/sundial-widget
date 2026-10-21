@@ -6,10 +6,14 @@ import android.content.Intent
 import android.provider.AlarmClock
 import androidx.annotation.StringRes
 import androidx.core.content.edit
+import com.roberrini.sundial.MainActivity
 import com.roberrini.sundial.R
 
 /** What a widget tap or a landing-page button does. */
 sealed class LaunchAction {
+
+    /** Sundial's own home screen. */
+    data object OpenSundial : LaunchAction()
 
     /** The clock app's alarms screen. */
     data object ShowAlarms : LaunchAction()
@@ -25,6 +29,10 @@ sealed class LaunchAction {
     /** Resolved, launchable intent, or null when nothing should happen (or nothing handles it). */
     fun toIntent(context: Context): Intent? {
         val intent = when (this) {
+            // CLEAR_TOP lands on the home screen even when the app was left in settings;
+            // SINGLE_TOP lets an existing home screen be reused rather than recreated.
+            OpenSundial -> Intent(context, MainActivity::class.java)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
             ShowAlarms -> Intent(AlarmClock.ACTION_SHOW_ALARMS)
             ShowTimers -> Intent(AlarmClock.ACTION_SHOW_TIMERS)
             is OpenApp -> Intent(Intent.ACTION_MAIN)
@@ -38,6 +46,7 @@ sealed class LaunchAction {
 
     /** Short label for a button; the app's own name when it opens an app. */
     fun label(context: Context): String = when (this) {
+        OpenSundial -> context.getString(R.string.action_open_app)
         ShowAlarms -> context.getString(R.string.action_alarms)
         ShowTimers -> context.getString(R.string.action_timers)
         None -> context.getString(R.string.action_none)
@@ -48,24 +57,25 @@ sealed class LaunchAction {
 
     companion object {
         private const val PREFS = "sundial"
+        private const val KIND_SUNDIAL = "sundial"
         private const val KIND_ALARMS = "alarms"
         private const val KIND_TIMERS = "timers"
         private const val KIND_APP = "app"
         private const val KIND_NONE = "none"
 
-        /** Written by versions before the landing page, when the only action was the clock. */
-        private const val KIND_LEGACY_CLOCK = "clock"
-
         fun load(context: Context, slot: ActionSlot): LaunchAction {
             val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
             return when (prefs.getString(slot.key, null)) {
-                KIND_ALARMS, KIND_LEGACY_CLOCK -> ShowAlarms
+                KIND_SUNDIAL -> OpenSundial
+                KIND_ALARMS -> ShowAlarms
                 KIND_TIMERS -> ShowTimers
                 KIND_NONE -> None
                 KIND_APP -> prefs.getString(slot.componentKey, null)
                     ?.let(ComponentName::unflattenFromString)
                     ?.let(::OpenApp)
                     ?: slot.default
+                // Nothing stored, or the "clock" that versions before the landing page wrote on
+                // every visit to settings — which said nothing about what the user wanted.
                 else -> slot.default
             }
         }
@@ -73,6 +83,7 @@ sealed class LaunchAction {
         fun save(context: Context, slot: ActionSlot, action: LaunchAction) {
             context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit {
                 when (action) {
+                    OpenSundial -> putString(slot.key, KIND_SUNDIAL).remove(slot.componentKey)
                     ShowAlarms -> putString(slot.key, KIND_ALARMS).remove(slot.componentKey)
                     ShowTimers -> putString(slot.key, KIND_TIMERS).remove(slot.componentKey)
                     None -> putString(slot.key, KIND_NONE).remove(slot.componentKey)
@@ -90,7 +101,7 @@ enum class ActionSlot(
     @param:StringRes val title: Int,
     val default: LaunchAction,
 ) {
-    WIDGET_TAP("tap_action", R.string.slot_widget_tap, LaunchAction.ShowAlarms),
+    WIDGET_TAP("tap_action", R.string.slot_widget_tap, LaunchAction.OpenSundial),
     BUTTON_PRIMARY("button_primary", R.string.slot_button_primary, LaunchAction.ShowAlarms),
     BUTTON_SECONDARY("button_secondary", R.string.slot_button_secondary, LaunchAction.ShowTimers);
 
