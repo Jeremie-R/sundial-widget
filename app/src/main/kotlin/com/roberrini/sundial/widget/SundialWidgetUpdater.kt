@@ -12,6 +12,8 @@ import android.widget.RemoteViews
 import androidx.core.os.BundleCompat
 import com.roberrini.sundial.R
 import com.roberrini.sundial.render.SundialColors
+import com.roberrini.sundial.action.ActionSlot
+import com.roberrini.sundial.action.LaunchAction
 import com.roberrini.sundial.render.SundialRenderer
 import com.roberrini.sundial.render.SundialStyle
 import com.roberrini.sundial.settings.AppearanceSettings
@@ -64,9 +66,9 @@ object SundialWidgetUpdater {
         val tapIntent: PendingIntent?,
     )
 
-    /** Activity to launch on tap, per the user's [TapAction]; null means the widget isn't clickable. */
+    /** Activity to launch on tap, per the user's choice; null means the widget isn't clickable. */
     private fun tapPendingIntent(context: Context): PendingIntent? {
-        val intent = TapAction.load(context).toIntent(context) ?: return null
+        val intent = LaunchAction.load(context, ActionSlot.WIDGET_TAP).toIntent(context) ?: return null
         return PendingIntent.getActivity(
             context,
             0,

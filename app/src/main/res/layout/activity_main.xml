@@ -9,182 +9,125 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:paddingStart="24dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="24dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/app_name"
-            android:textAppearance="?attr/textAppearanceHeadlineMedium"
-            android:textColor="?attr/colorOnSurface" />
-
-        <!-- Live preview of the widget as currently configured -->
+        <!-- The dial, exactly as the widget draws it right now -->
         <ImageView
-            android:id="@+id/appearance_preview"
-            android:layout_width="176dp"
-            android:layout_height="176dp"
+            android:id="@+id/dial"
+            android:layout_width="@dimen/landing_dial_size"
+            android:layout_height="@dimen/landing_dial_size"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp"
             android:contentDescription="@string/preview_description" />
 
-        <!-- Appearance -->
         <TextView
+            android:id="@+id/location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/appearance_title"
-            android:textAppearance="?attr/textAppearanceTitleMedium"
-            android:textColor="?attr/colorOnSurface" />
-
-        <include android:id="@+id/row_look" layout="@layout/row_setting" />
-        <include android:id="@+id/row_shape" layout="@layout/row_setting" />
-        <include android:id="@+id/row_hue" layout="@layout/row_setting" />
-        <include android:id="@+id/row_theme" layout="@layout/row_setting" />
-        <include android:id="@+id/row_twilight" layout="@layout/row_setting" />
-        <include android:id="@+id/row_night" layout="@layout/row_setting" />
-
-        <com.google.android.material.materialswitch.MaterialSwitch
-            android:id="@+id/sparkles_switch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="52dp"
-            android:paddingStart="4dp"
-            android:paddingEnd="4dp"
-            android:text="@string/row_sparkles"
-            android:textAppearance="?attr/textAppearanceBodyLarge"
-            android:textColor="?attr/colorOnSurface" />
-
-        <!-- Location -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/location_title"
-            android:textAppearance="?attr/textAppearanceTitleMedium"
-            android:textColor="?attr/colorOnSurface" />
-
-        <RadioGroup
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:orientation="vertical">
-
-            <RadioButton
-                android:id="@+id/loc_device"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="48dp"
-                android:text="@string/loc_device" />
-
-            <TextView
-                android:id="@+id/loc_device_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="40dp"
-                android:layout_marginBottom="8dp"
-                android:textAppearance="?attr/textAppearanceBodyMedium"
-                android:textColor="?attr/colorOnSurfaceVariant" />
-
-            <RadioButton
-                android:id="@+id/loc_city"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="48dp"
-                android:text="@string/loc_city" />
-
-            <TextView
-                android:id="@+id/loc_city_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="40dp"
-                android:textAppearance="?attr/textAppearanceBodyMedium"
-                android:textColor="?attr/colorOnSurfaceVariant" />
-        </RadioGroup>
-
-        <TextView
-            android:id="@+id/sun_summary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="4dp"
             android:textAppearance="?attr/textAppearanceBodyMedium"
-            android:textColor="?attr/colorPrimary" />
+            android:textColor="?attr/colorOnSurfaceVariant" />
 
-        <!-- Tap action -->
+        <!-- Sun -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
-            android:text="@string/tap_action_title"
+            android:layout_marginTop="24dp"
+            android:text="@string/section_sun"
             android:textAppearance="?attr/textAppearanceTitleMedium"
             android:textColor="?attr/colorOnSurface" />
 
-        <RadioGroup
+        <include android:id="@+id/row_sunrise" layout="@layout/row_info" />
+        <include android:id="@+id/row_sunset" layout="@layout/row_info" />
+        <include android:id="@+id/row_daylight" layout="@layout/row_info" />
+        <include android:id="@+id/row_civil" layout="@layout/row_info" />
+        <include android:id="@+id/row_nautical" layout="@layout/row_info" />
+        <include android:id="@+id/row_astronomical" layout="@layout/row_info" />
+
+        <!-- Moon -->
+        <LinearLayout
+            android:id="@+id/moon_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:orientation="vertical">
 
-            <RadioButton
-                android:id="@+id/tap_clock"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="48dp"
-                android:text="@string/tap_open_clock" />
-
             <TextView
-                android:id="@+id/tap_clock_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="40dp"
-                android:layout_marginBottom="8dp"
-                android:textAppearance="?attr/textAppearanceBodyMedium"
-                android:textColor="?attr/colorOnSurfaceVariant" />
+                android:layout_marginTop="20dp"
+                android:text="@string/section_moon"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textColor="?attr/colorOnSurface" />
 
-            <RadioButton
-                android:id="@+id/tap_app"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp"
-                android:text="@string/tap_open_app" />
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/tap_app_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="40dp"
-                android:layout_marginBottom="8dp"
-                android:textAppearance="?attr/textAppearanceBodyMedium"
-                android:textColor="?attr/colorOnSurfaceVariant" />
+                <ImageView
+                    android:id="@+id/moon_icon"
+                    android:layout_width="@dimen/moon_icon_size"
+                    android:layout_height="@dimen/moon_icon_size"
+                    android:importantForAccessibility="no" />
 
-            <RadioButton
-                android:id="@+id/tap_none"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="48dp"
-                android:text="@string/tap_none" />
-        </RadioGroup>
+                <TextView
+                    android:id="@+id/moon_phase"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
+                    android:textColor="?attr/colorOnSurface" />
 
+                <TextView
+                    android:id="@+id/moon_illumination"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+            </LinearLayout>
+
+            <include android:id="@+id/row_moonrise" layout="@layout/row_info" />
+            <include android:id="@+id/row_moonset" layout="@layout/row_info" />
+        </LinearLayout>
+
+        <!-- Shortcuts -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:gravity="end"
+            android:layout_marginTop="28dp"
             android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/add_widget"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="wrap_content"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_primary"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="@string/add_widget" />
+                android:layout_marginEnd="6dp"
+                android:layout_weight="1" />
 
-            <Button
-                android:id="@+id/done"
-                android:layout_width="wrap_content"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_secondary"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/done" />
+                android:layout_marginStart="6dp"
+                android:layout_weight="1" />
         </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_settings"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/settings_title" />
 
     </LinearLayout>
 </ScrollView>

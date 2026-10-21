@@ -3,4 +3,7 @@
     <!-- Defaults for the picker preview; the updater scales these with the widget size. -->
     <dimen name="widget_time_text_size">20sp</dimen>
     <dimen name="widget_date_text_size">11sp</dimen>
+
+    <dimen name="landing_dial_size">200dp</dimen>
+    <dimen name="moon_icon_size">36dp</dimen>
 </resources>

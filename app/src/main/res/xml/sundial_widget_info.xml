@@ -6,7 +6,7 @@
   and reachable later via the launcher's reconfigure affordance.
 -->
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:configure="com.roberrini.sundial.MainActivity"
+    android:configure="com.roberrini.sundial.SettingsActivity"
     android:description="@string/widget_description"
     android:initialLayout="@layout/widget_sundial"
     android:minWidth="110dp"

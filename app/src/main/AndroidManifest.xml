@@ -12,6 +12,9 @@
             <action android:name="android.intent.action.SHOW_ALARMS" />
         </intent>
         <intent>
+            <action android:name="android.intent.action.SHOW_TIMERS" />
+        </intent>
+        <intent>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent>
@@ -24,7 +27,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Sundial">
 
-        <!-- Settings screen; also the widget's (re)configure activity. -->
+        <!-- Landing page: the dial, today's sun and moon, and the shortcut buttons. -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -32,6 +35,13 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <!-- Settings; also the widget's (re)configure activity, so it must be exported. -->
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="true"
+            android:parentActivityName=".MainActivity">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>

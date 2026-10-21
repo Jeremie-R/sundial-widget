@@ -3,7 +3,6 @@ package com.roberrini.sundial.settings
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.GradientDrawable
-import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.materialswitch.MaterialSwitch
 import com.roberrini.sundial.R
+import com.roberrini.sundial.render.DialPreview
 import com.roberrini.sundial.render.Look
 import com.roberrini.sundial.render.NightSun
 import com.roberrini.sundial.render.Shape
@@ -23,13 +23,6 @@ import com.roberrini.sundial.render.SundialColors
 import com.roberrini.sundial.render.SundialRenderer
 import com.roberrini.sundial.render.SundialStyle
 import com.roberrini.sundial.render.TwilightBar
-import com.roberrini.sundial.sun.SunTimesProvider
-import com.roberrini.sundial.time.DayProgress
-import java.time.LocalDate
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
-import java.time.format.TextStyle
-import java.util.Locale
 import kotlin.math.roundToInt
 
 /**
@@ -178,17 +171,8 @@ class AppearanceUi(
     // ---- rendering ----
 
     /** The face as the widget would draw it right now, with the current time painted in. */
-    private fun renderSample(px: Int, style: SundialStyle, colors: SundialColors): Bitmap {
-        val now = LocalTime.now()
-        val today = LocalDate.now()
-        // Same 12/24-hour choice as the widget's TextClock.
-        val pattern = if (DateFormat.is24HourFormat(context)) "HH:mm" else "h:mm"
-        val text = SundialRenderer.TextOverlay(
-            time = now.format(DateTimeFormatter.ofPattern(pattern)),
-            date = "${today.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())} ${today.dayOfMonth}",
-        )
-        return SundialRenderer.render(px, px, DayProgress.now(), SunTimesProvider.today(context), colors, style, text)
-    }
+    private fun renderSample(px: Int, style: SundialStyle, colors: SundialColors): Bitmap =
+        DialPreview.render(context, px, style, colors)
 
     private fun dp(value: Float): Int = (value * context.resources.displayMetrics.density).roundToInt()
 

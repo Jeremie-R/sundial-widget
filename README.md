@@ -4,6 +4,8 @@ A minimalist sun-path clock widget for Android, styled with Material You.
 
 Instead of hands, a 24-hour dial shows today's sun: an arc from sunrise to sunset, a thin bar out to astronomical dawn and dusk, and nothing at night. A small sun moves along it through the day. The colours come from your wallpaper.
 
+The app behind it shows the same dial with today's sun and moon in full, and keeps shortcuts to your clock.
+
 <p align="center">
   <img src="docs/widget-light.png" width="300" alt="Sundial widget, light theme">
   <img src="docs/widget-dark.png" width="300" alt="Sundial widget, dark theme">
@@ -12,16 +14,21 @@ Instead of hands, a 24-hour dial shows today's sun: an arc from sunrise to sunse
 ## What it does
 
 - **24-hour dial** — midnight at the bottom, noon at the top. The daylight track runs from today's real sunrise to sunset; the thin bar extends it to astronomical dawn and dusk (−18°), plain by default or, optionally, fading through the civil, nautical and astronomical twilights; the night stays blank. The sun is filled while above the horizon.
-- **Real sun times** — computed on-device with the NOAA solar algorithm from your approximate location (or a city you choose), recomputed for the current date at every refresh. No network, no accounts.
+- **Real sun and moon times** — computed on-device (NOAA for the sun, Meeus' lunar theory for the moon) from your approximate location, or a city you choose, and recomputed for the current date at every refresh. No network, no accounts.
 - **Material You** — reads the system's dynamic colour palette, follows light/dark, and rounds to the launcher's corner radius. Or pick a fixed hue preset.
 - **Your style** — five looks (Pillow, Bold, Line, High contrast, Beads), ten background shapes (Material You cookies, clover, sunny, burst, circle, squircle, or none), sun-at-night as outline / moon / hidden, optional night sparkles.
-- **Tap to open** the clock app, any app you choose, or nothing.
+- **A home screen** with the live dial, today's sunrise, sunset, daylight length and all three twilights, plus the moon's phase, how much of it is lit, and when it rises and sets.
+- **Shortcuts** straight to your clock app's alarms or timers — or any app you choose. The widget tap and both buttons are configurable.
 - **Battery-friendly** — the digital time is a `TextClock` that ticks by itself; the sun only needs a re-render every 15 minutes, done with an inexact, non-wakeup alarm.
+
+<p align="center">
+  <img src="docs/landing.png" width="250" alt="The app's home screen">
+  <img src="docs/settings.png" width="250" alt="Settings screen">
+</p>
 
 <p align="center">
   <img src="docs/styles.png" width="280" alt="Style picker">
   <img src="docs/backgrounds.png" width="280" alt="Background shape picker">
-  <img src="docs/settings.png" width="240" alt="Settings screen">
 </p>
 
 ## Requirements
@@ -61,19 +68,23 @@ AlarmManager (every 15 min, inexact, non-wakeup)
 |---|---|
 | Drawing (no Android component dependencies, testable on its own) | `render/SundialRenderer.kt`, `render/Shapes.kt`, `render/SundialColors.kt` |
 | Sunrise / sunset and the three twilights (NOAA), polar day and night handled | `sun/SunCalculator.kt` |
+| Moonrise / moonset, phase and illumination (Meeus ch. 47) | `moon/MoonCalculator.kt` |
+| What the widget tap and each button open | `action/LaunchAction.kt` |
 | Location: approximate permission with a city-list fallback | `location/` |
 | Widget plumbing: provider, updater, alarm, boot / time-change receiver | `widget/` |
-| Settings and the widget's reconfigure screen | `MainActivity.kt`, `settings/` |
+| Home screen, and settings (also the widget's reconfigure screen) | `MainActivity.kt`, `SettingsActivity.kt`, `settings/` |
 
 Notes worth knowing:
 
 - Android hands no location to a widget running in the background without the "all the time" permission, so the fix is refreshed whenever the settings screen is open and reused in between — city-level accuracy is all sunrise times need.
 - Inexact alarms are batched by the system within 75 % of their interval, so a tick can land up to ~11 minutes late. That is invisible on a 24-hour dial; the digital time is unaffected.
 - The update interval is a single constant, `SundialUpdateScheduler.UPDATE_INTERVAL_MS`.
+- The moon maths is checked against [PyEphem](https://rhodesmill.org/pyephem/): rise and set agree to within 15 seconds, illumination to within 0.25 percentage points.
+- Alarms and timers are opened with the platform's own `ACTION_SHOW_ALARMS` and `ACTION_SHOW_TIMERS`, so they work with whichever clock app is installed.
 
 ## Status
 
-Early (0.1). Works, but the visual design is still being tuned.
+Early (0.3). Works, but the visual design is still being tuned.
 
 ## License
 

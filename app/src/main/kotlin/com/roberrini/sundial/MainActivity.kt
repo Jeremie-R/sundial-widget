@@ -1,332 +1,180 @@
 package com.roberrini.sundial
 
-import android.Manifest
-import android.appwidget.AppWidgetManager
-import android.content.ComponentName
 import android.content.Intent
-import android.graphics.drawable.Drawable
-import android.location.LocationManager
-import android.net.Uri
 import android.os.Bundle
-import android.provider.AlarmClock
-import android.provider.Settings
 import android.view.View
-import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageView
-import android.widget.ListView
-import android.widget.RadioButton
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.doAfterTextChanged
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.color.DynamicColors
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.color.MaterialColors
+import com.roberrini.sundial.action.ActionSlot
+import com.roberrini.sundial.action.LaunchAction
 import com.roberrini.sundial.location.Cities
-import com.roberrini.sundial.location.City
-import com.roberrini.sundial.location.LatLon
 import com.roberrini.sundial.location.LocationSettings
 import com.roberrini.sundial.location.LocationSource
-import com.roberrini.sundial.settings.AppearanceUi
+import com.roberrini.sundial.moon.MoonInfo
+import com.roberrini.sundial.moon.MoonProvider
+import com.roberrini.sundial.render.DialPreview
+import com.roberrini.sundial.render.MoonRenderer
 import com.roberrini.sundial.sun.DaySpan
+import com.roberrini.sundial.sun.SunTimes
 import com.roberrini.sundial.sun.SunTimesProvider
-import com.roberrini.sundial.widget.SundialWidgetProvider
-import com.roberrini.sundial.widget.SundialWidgetUpdater
-import com.roberrini.sundial.widget.TapAction
-import java.util.Locale
+import com.roberrini.sundial.util.DayTimeFormat
+import kotlin.math.roundToInt
 
 /**
- * The app's only screen: where the sun times come from, and what tapping the widget
- * does. Serves both as the launcher entry point and as the widget's (re)configure
- * activity, in which case it must hand the widget id back with RESULT_OK.
+ * The app's home screen: the dial as the widget draws it now, today's sun and moon for
+ * the configured location, and the buttons that leave for the clock app or settings.
  */
 class MainActivity : AppCompatActivity() {
 
-    private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
-    private var selectedTap: TapAction = TapAction.OpenClock
-    private lateinit var appearance: AppearanceUi
-
-    private lateinit var locDevice: RadioButton
-    private lateinit var locDeviceLabel: TextView
-    private lateinit var locCity: RadioButton
-    private lateinit var locCityLabel: TextView
-    private lateinit var sunSummary: TextView
-
-    private lateinit var clockOption: RadioButton
-    private lateinit var appOption: RadioButton
-    private lateinit var noneOption: RadioButton
-    private lateinit var clockLabel: TextView
-    private lateinit var appLabel: TextView
-
-    private val requestLocationPermission =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-            if (granted) {
-                LocationSettings.setSource(this, LocationSource.DEVICE)
-                fetchDeviceLocation()
-            } else {
-                // Refused: fall back to a manual city, and offer the picker straight away.
-                LocationSettings.setSource(this, LocationSource.CITY)
-                if (!shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION)) {
-                    // Android won't show the prompt again: explain, and lead to the picker from there.
-                    explainPermanentDenial()
-                } else if (LocationSettings.city(this) == null) {
-                    pickCity()
-                }
-            }
-            refreshLocationUi()
-        }
+    private lateinit var dial: ImageView
+    private lateinit var location: TextView
+    private lateinit var moonIcon: ImageView
+    private lateinit var moonPhase: TextView
+    private lateinit var moonIllumination: TextView
+    private lateinit var primaryButton: MaterialButton
+    private lateinit var secondaryButton: MaterialButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         DynamicColors.applyToActivityIfAvailable(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        appWidgetId = intent.getIntExtra(
-            AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID,
-        )
-        // Configure flow: nothing changes unless the user taps Done.
-        if (isConfigureFlow) setResult(RESULT_CANCELED)
+        dial = findViewById(R.id.dial)
+        location = findViewById(R.id.location)
+        moonIcon = findViewById(R.id.moon_icon)
+        moonPhase = findViewById(R.id.moon_phase)
+        moonIllumination = findViewById(R.id.moon_illumination)
+        primaryButton = findViewById(R.id.button_primary)
+        secondaryButton = findViewById(R.id.button_secondary)
 
-        locDevice = findViewById(R.id.loc_device)
-        locDeviceLabel = findViewById(R.id.loc_device_label)
-        locCity = findViewById(R.id.loc_city)
-        locCityLabel = findViewById(R.id.loc_city_label)
-        sunSummary = findViewById(R.id.sun_summary)
-        clockOption = findViewById(R.id.tap_clock)
-        appOption = findViewById(R.id.tap_app)
-        noneOption = findViewById(R.id.tap_none)
-        clockLabel = findViewById(R.id.tap_clock_label)
-        appLabel = findViewById(R.id.tap_app_label)
+        findViewById<Button>(R.id.button_settings).setOnClickListener { openSettings() }
+        // The sun and moon need a location, and that's set in settings.
+        location.setOnClickListener { openSettings() }
 
-        appearance = AppearanceUi(this, findViewById(android.R.id.content)) { SundialWidgetUpdater.updateAll(this) }
+        // First run: there is no location yet, so start where the permission is asked for.
+        if (savedInstanceState == null && LocationSettings.source(this) == null) openSettings()
+    }
 
-        locDevice.setOnClickListener { useDeviceLocation() }
-        locCity.setOnClickListener { pickCity() }
-
-        clockLabel.text = clockAppLabel() ?: getString(R.string.no_clock_app)
-        selectedTap = TapAction.load(this)
-        showTapSelection()
-        clockOption.setOnClickListener { selectTap(TapAction.OpenClock) }
-        noneOption.setOnClickListener { selectTap(TapAction.None) }
-        appOption.setOnClickListener { pickApp() }
-
-        findViewById<Button>(R.id.done).setOnClickListener { save() }
-        findViewById<Button>(R.id.add_widget).apply {
-            visibility = if (isConfigureFlow) View.GONE else View.VISIBLE
-            setOnClickListener { requestPinWidget() }
-        }
-
-        refreshLocationUi()
-        // First run: ask for the permission right away; the fallback is the city picker.
-        if (savedInstanceState == null && LocationSettings.source(this) == null) useDeviceLocation()
+    private fun openSettings() {
+        startActivity(Intent(this, SettingsActivity::class.java))
     }
 
     override fun onResume() {
         super.onResume()
-        // The widget can't get a fix in the background, so refresh it whenever we're visible.
-        if (LocationSettings.source(this) == LocationSource.DEVICE && LocationSettings.hasPermission(this)) {
-            fetchDeviceLocation()
-        }
+        // Everything here is "now": re-read it each time the screen comes forward.
+        showDial()
+        showLocation()
+        showSun(SunTimesProvider.today(this))
+        showMoon(MoonProvider.today(this))
+        showButtons()
     }
 
-    private val isConfigureFlow: Boolean
-        get() = appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID
-
-    // ---- Location ----
-
-    private fun useDeviceLocation() {
-        if (LocationSettings.hasPermission(this)) {
-            LocationSettings.setSource(this, LocationSource.DEVICE)
-            fetchDeviceLocation()
-            refreshLocationUi()
-        } else {
-            requestLocationPermission.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
-        }
+    private fun showDial() {
+        val size = resources.getDimensionPixelSize(R.dimen.landing_dial_size)
+        dial.setImageBitmap(DialPreview.render(this, size))
     }
 
-    private fun fetchDeviceLocation() {
-        if (!LocationSettings.hasPermission(this)) return
-        val provider = LocationSettings.coarseProvider(this) ?: return
-        val manager = getSystemService(LocationManager::class.java)
-        try {
-            manager.getLastKnownLocation(provider)?.let { onDeviceLocation(LatLon(it.latitude, it.longitude)) }
-            manager.getCurrentLocation(provider, null, mainExecutor) { location ->
-                if (location != null && !isDestroyed) onDeviceLocation(LatLon(location.latitude, location.longitude))
-            }
-        } catch (e: SecurityException) {
-            refreshLocationUi()
-        }
-    }
-
-    private fun onDeviceLocation(location: LatLon) {
-        LocationSettings.storeDeviceLocation(this, location)
-        refreshLocationUi()
-        SundialWidgetUpdater.updateAll(this)
-    }
-
-    private fun explainPermanentDenial() {
-        MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.perm_denied_title)
-            .setMessage(R.string.perm_denied_body)
-            .setNegativeButton(R.string.perm_denied_use_city) { _, _ ->
-                if (LocationSettings.city(this) == null) pickCity()
-            }
-            .setPositiveButton(R.string.open_settings) { _, _ ->
-                startActivity(
-                    Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", packageName, null)),
-                )
-            }
-            .show()
-    }
-
-    private fun pickCity() {
-        val view = layoutInflater.inflate(R.layout.dialog_city_picker, null)
-        val search = view.findViewById<EditText>(R.id.city_search)
-        val list = view.findViewById<ListView>(R.id.city_list)
-        val shown = ArrayList(Cities.all)
-        val adapter = object : ArrayAdapter<City>(this, R.layout.item_city, R.id.city_name, shown) {
-            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View =
-                super.getView(position, convertView, parent).also { row ->
-                    val city = getItem(position) ?: return row
-                    row.findViewById<TextView>(R.id.city_name).text = city.name
-                    row.findViewById<TextView>(R.id.city_country).text = city.country
-                }
-        }
-        list.adapter = adapter
-        search.doAfterTextChanged { text ->
-            val query = text?.toString()?.trim().orEmpty().lowercase(Locale.ROOT)
-            shown.clear()
-            shown.addAll(Cities.all.filter { query.isEmpty() || it.label.lowercase(Locale.ROOT).contains(query) })
-            adapter.notifyDataSetChanged()
-        }
-
-        val dialog = MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.choose_city)
-            .setView(view)
-            .setNegativeButton(android.R.string.cancel, null)
-            .setOnCancelListener { refreshLocationUi() }
-            .show()
-        list.setOnItemClickListener { _, _, position, _ ->
-            val city = adapter.getItem(position) ?: return@setOnItemClickListener
-            LocationSettings.setCity(this, city)
-            refreshLocationUi()
-            SundialWidgetUpdater.updateAll(this)
-            dialog.dismiss()
-        }
-    }
-
-    private fun refreshLocationUi() {
-        val source = LocationSettings.source(this)
-        locDevice.isChecked = source == LocationSource.DEVICE
-        locCity.isChecked = source == LocationSource.CITY
-
-        locDeviceLabel.text = when {
-            !LocationSettings.hasPermission(this) -> getString(R.string.loc_device_denied)
-            source != LocationSource.DEVICE -> getString(R.string.loc_device_available)
-            else -> LocationSettings.storedDeviceLocation(this)
+    private fun showLocation() {
+        val settings = LocationSettings.source(this)
+        location.text = when {
+            settings == LocationSource.CITY -> LocationSettings.city(this)?.label
+            settings == LocationSource.DEVICE -> LocationSettings.storedDeviceLocation(this)
                 ?.let { getString(R.string.loc_near, Cities.nearest(it.lat, it.lon).name) }
-                ?: getString(R.string.loc_device_waiting)
-        }
-        locCityLabel.text = LocationSettings.city(this)?.label ?: getString(R.string.loc_city_none)
-
-        val located = LocationSettings.resolve(this) != null
-        val times = SunTimesProvider.today(this)
-        sunSummary.text = when {
-            !located -> getString(R.string.sun_summary_default)
-            times.daylight is DaySpan.All -> getString(R.string.sun_all_day)
-            times.daylight is DaySpan.None -> getString(R.string.sun_none)
-            else -> (times.daylight as DaySpan.Between).let { getString(R.string.sun_summary, clock(it.start), clock(it.end)) }
-        }
-        // The preview draws today's sun path, so it follows the location too.
-        appearance.refresh()
+            else -> null
+        } ?: getString(R.string.landing_no_location)
     }
 
-    private fun clock(fraction: Float): String {
-        val minutes = (fraction * 1440).toInt()
-        return String.format(Locale.getDefault(), "%02d:%02d", minutes / 60, minutes % 60)
+    private fun showSun(sun: SunTimes) {
+        val daylight = sun.daylight
+        infoRow(R.id.row_sunrise, R.string.info_sunrise, single(daylight, start = true))
+        infoRow(R.id.row_sunset, R.string.info_sunset, single(daylight, start = false))
+        infoRow(R.id.row_daylight, R.string.info_daylight, dayLength(daylight))
+        infoRow(R.id.row_civil, R.string.info_civil, range(sun.civil))
+        infoRow(R.id.row_nautical, R.string.info_nautical, range(sun.nautical))
+        infoRow(R.id.row_astronomical, R.string.info_astronomical, range(sun.astronomical))
     }
 
-    // ---- Tap action ----
+    private fun showMoon(moon: MoonInfo?) {
+        val hasMoon = moon != null
+        findViewById<View>(R.id.moon_section).visibility = if (hasMoon) View.VISIBLE else View.GONE
+        if (moon == null) return
 
-    private fun selectTap(action: TapAction) {
-        selectedTap = action
-        showTapSelection()
-    }
-
-    private fun showTapSelection() {
-        clockOption.isChecked = selectedTap is TapAction.OpenClock
-        appOption.isChecked = selectedTap is TapAction.OpenApp
-        noneOption.isChecked = selectedTap is TapAction.None
-        appLabel.text = (selectedTap as? TapAction.OpenApp)
-            ?.let { labelOf(it.component) }
-            ?: getString(R.string.no_app_chosen)
-    }
-
-    private fun clockAppLabel(): String? {
-        val info = Intent(AlarmClock.ACTION_SHOW_ALARMS).resolveActivityInfo(packageManager, 0) ?: return null
-        return info.loadLabel(packageManager).toString()
-    }
-
-    private fun labelOf(component: ComponentName): String? = runCatching {
-        packageManager.getActivityInfo(component, 0).loadLabel(packageManager).toString()
-    }.getOrNull()
-
-    private fun pickApp() {
-        val pm = packageManager
-        @Suppress("DEPRECATION")
-        val apps = pm.queryIntentActivities(
-            Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER), 0,
+        val size = resources.getDimensionPixelSize(R.dimen.moon_icon_size)
+        moonIcon.setImageBitmap(
+            MoonRenderer.render(
+                sizePx = size,
+                illumination = moon.illumination,
+                waning = moon.waning,
+                lit = MaterialColors.getColor(moonIcon, androidx.appcompat.R.attr.colorPrimary),
+                dark = MaterialColors.getColor(moonIcon, com.google.android.material.R.attr.colorSurfaceVariant),
+            ),
         )
-            .filter { it.activityInfo.packageName != packageName }
-            .map {
-                AppEntry(
-                    label = it.loadLabel(pm).toString(),
-                    icon = it.loadIcon(pm),
-                    component = ComponentName(it.activityInfo.packageName, it.activityInfo.name),
-                )
-            }
-            .sortedBy { it.label.lowercase(Locale.ROOT) }
-
-        val adapter = object : ArrayAdapter<AppEntry>(this, R.layout.item_app, R.id.app_label, apps) {
-            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View =
-                super.getView(position, convertView, parent).also { row ->
-                    row.findViewById<ImageView>(R.id.app_icon).setImageDrawable(getItem(position)?.icon)
-                }
-        }
-
-        MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.choose_app)
-            .setAdapter(adapter) { _, which -> selectTap(TapAction.OpenApp(apps[which].component)) }
-            // Dismissed without choosing: keep whatever was selected before.
-            .setOnCancelListener { showTapSelection() }
-            .show()
+        moonPhase.setText(moon.phaseName.label)
+        moonIllumination.text = getString(R.string.moon_lit, (moon.illumination * 100).roundToInt())
+        infoRow(
+            R.id.row_moonrise, R.string.info_moonrise,
+            when {
+                moon.alwaysUp -> getString(R.string.moon_always_up)
+                moon.alwaysDown -> getString(R.string.moon_always_down)
+                else -> DayTimeFormat.of(this, moon.rise)
+            },
+        )
+        infoRow(
+            R.id.row_moonset, R.string.info_moonset,
+            if (moon.alwaysUp || moon.alwaysDown) "" else DayTimeFormat.of(this, moon.set),
+        )
     }
 
-    // ---- Done / pin ----
-
-    private fun save() {
-        TapAction.save(this, selectedTap)
-        SundialWidgetUpdater.updateAll(this)
-        if (isConfigureFlow) {
-            setResult(RESULT_OK, Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId))
-        }
-        finish()
+    private fun showButtons() {
+        bind(primaryButton, ActionSlot.BUTTON_PRIMARY)
+        bind(secondaryButton, ActionSlot.BUTTON_SECONDARY)
     }
 
-    private fun requestPinWidget() {
-        val manager = AppWidgetManager.getInstance(this)
-        val provider = ComponentName(this, SundialWidgetProvider::class.java)
-        if (manager.isRequestPinAppWidgetSupported) {
-            manager.requestPinAppWidget(provider, null, null)
-        } else {
-            Toast.makeText(this, R.string.pin_unsupported, Toast.LENGTH_LONG).show()
+    private fun bind(button: MaterialButton, slot: ActionSlot) {
+        val action = LaunchAction.load(this, slot)
+        val intent = action.toIntent(this)
+        // A button with nothing to open would be a dead end, so it isn't shown at all.
+        button.visibility = if (intent == null) View.GONE else View.VISIBLE
+        button.text = action.label(this)
+        button.setOnClickListener {
+            runCatching { startActivity(intent) }
+                .onFailure { Toast.makeText(this, R.string.action_failed, Toast.LENGTH_SHORT).show() }
         }
     }
 
-    private class AppEntry(val label: String, val icon: Drawable, val component: ComponentName) {
-        override fun toString() = label
+    private fun infoRow(rowId: Int, labelId: Int, value: String) {
+        val row = findViewById<View>(rowId)
+        row.findViewById<TextView>(R.id.info_label).setText(labelId)
+        row.findViewById<TextView>(R.id.info_value).text = value
+    }
+
+    private fun single(span: DaySpan, start: Boolean): String = when (span) {
+        DaySpan.All -> getString(R.string.sun_all_day_short)
+        DaySpan.None -> getString(R.string.sun_none_short)
+        is DaySpan.Between -> DayTimeFormat.of(this, if (start) span.start else span.end)
+    }
+
+    private fun range(span: DaySpan): String = when (span) {
+        DaySpan.All -> getString(R.string.sun_all_day_short)
+        DaySpan.None -> getString(R.string.sun_none_short)
+        is DaySpan.Between -> getString(
+            R.string.info_range, DayTimeFormat.of(this, span.start), DayTimeFormat.of(this, span.end),
+        )
+    }
+
+    private fun dayLength(span: DaySpan): String {
+        val fraction = when (span) {
+            DaySpan.All -> 1f
+            DaySpan.None -> 0f
+            is DaySpan.Between -> (span.end - span.start + 1f) % 1f
+        }
+        val minutes = (fraction * 1440).roundToInt()
+        return getString(R.string.info_duration, minutes / 60, minutes % 60)
     }
 }
