@@ -31,6 +31,18 @@ The app behind it shows the same dial with today's sun and moon in full, and kee
   <img src="docs/backgrounds.png" width="280" alt="Background shape picker">
 </p>
 
+## Install
+
+Download [`Sundial-0.3.1.apk`](Sundial-0.3.1.apk) and open it on your phone. Android will
+ask you to allow installs from whichever app you opened it with.
+
+On first launch the app asks for approximate location, so it can work out your sunrise and
+sunset. Decline and you can pick a city from a built-in list instead — either way nothing
+leaves the phone (see [Privacy](#privacy)).
+
+Then add the widget from your launcher's widget picker, or with the **Add widget** button
+in the app's settings.
+
 ## Requirements
 
 - Android 12 or newer (`minSdk 31`, needed for dynamic colour).
@@ -81,6 +93,21 @@ Notes worth knowing:
 - The update interval is a single constant, `SundialUpdateScheduler.UPDATE_INTERVAL_MS`.
 - The moon maths is checked against [PyEphem](https://rhodesmill.org/pyephem/): rise and set agree to within 15 seconds, illumination to within 0.25 percentage points.
 - Alarms and timers are opened with the platform's own `ACTION_SHOW_ALARMS` and `ACTION_SHOW_TIMERS`, so they work with whichever clock app is installed.
+
+## Privacy
+
+Sundial has no `INTERNET` permission, so Android stops it opening a network connection at
+all — your location cannot leave the device even in principle. There are no accounts, no
+analytics and no adverts. Coordinates and settings live in the app's private storage and
+go away when you uninstall it. The full text is in
+[`play/privacy-policy.md`](play/privacy-policy.md).
+
+## Publishing
+
+[`play/`](play/) holds everything a Google Play listing needs: the 512px icon, a 1024×500
+feature graphic, six 1080×1920 phone screenshots, the listing copy, and the privacy policy
+Play requires for apps that use location. [`play/listing.md`](play/listing.md) lists what
+still has to be done by hand in the Play Console.
 
 ## Status
 
