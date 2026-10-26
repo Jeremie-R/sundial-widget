@@ -1,0 +1,28 @@
+Sundial replaces the clock face with the sky.
+
+A 24-hour dial runs from midnight at the bottom to noon at the top. An arc marks the hours between sunrise and sunset, a thin bar carries on to astronomical dawn and dusk, and the night is left blank. A small sun travels along it through the day, so a glance tells you how much daylight is left.
+
+The times are the real ones for where you are, worked out on your phone.
+
+WIDGET
+• A 2x2 widget that resizes, with the time and date in the middle
+• Colours taken from your wallpaper on Android 12 and newer, light and dark
+• Five styles, from soft and rounded to high contrast
+• Ten background shapes, or none at all
+• Tap it to open the app, your alarms, your timers, or any app you choose
+
+IN THE APP
+• Today's sunrise and sunset, how long the day lasts, and the civil, nautical and astronomical twilights
+• The moon: its phase drawn as it really looks tonight, how much of it is lit, and when it rises and sets
+• Shortcuts to your clock app's alarms and timers
+
+QUIET BY DESIGN
+• No internet permission, so nothing can leave your phone
+• No accounts, no adverts, no tracking, no analytics
+• The sun and moon are computed on the device with standard astronomical methods (NOAA for the sun, Meeus for the moon)
+• The widget redraws every 15 minutes with an inexact alarm that never wakes your phone
+
+LOCATION
+Sunrise and sunset depend on where you are, so the app asks for approximate location once. If you would rather not share it, pick a city from the built-in list instead and the app will never ask again. Your location stays on the device.
+
+The source code is open: https://github.com/Jeremie-R/sundial-widget

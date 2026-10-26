@@ -1,0 +1,1 @@
+A minimalist sun-path clock widget. Sunrise, sunset and the moon, offline.

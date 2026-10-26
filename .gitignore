@@ -13,3 +13,6 @@ local.properties
 /keystore/
 /keystore.properties
 /dist/
+
+# gplay local pins (machine-specific)
+.gplay/config.local.json

@@ -1,0 +1,8 @@
+First test build.
+
+• 24-hour dial: sunrise to sunset as an arc, twilight as a thin bar, a sun that moves through the day
+• Five styles, ten shapes, your wallpaper's colours
+• Real sun and moon times, worked out on the phone
+• Tap the widget to open the app, alarms or timers
+
+Worth checking: the time is still right after a reboot, it follows dark mode, and sunrise and sunset match what you see.
