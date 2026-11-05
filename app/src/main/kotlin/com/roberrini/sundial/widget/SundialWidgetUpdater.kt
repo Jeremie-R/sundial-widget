@@ -171,7 +171,7 @@ object SundialWidgetUpdater {
         for ((i, id) in OVERLAP_HOUR_VIEWS.withIndex()) {
             styleTime(id, i == index, frame, dialDp, SundialRenderer.OVERLAP_TEXT)
             if (i != index) continue
-            setTextColor(id, frame.colors.tertiary)
+            setTextColor(id, frame.colors.primary)
             setFloat(id, "setLetterSpacing", SundialRenderer.OVERLAP_TRACKING)
             setViewLayoutMargin(id, RemoteViews.MARGIN_START, stagger, TypedValue.COMPLEX_UNIT_DIP)
         }

@@ -318,7 +318,7 @@ object SundialRenderer {
                     val stagger = size * OVERLAP_STAGGER / 2
                     val tracked = { color: Int -> paint(OVERLAP_TEXT, color, family).apply { letterSpacing = OVERLAP_TRACKING } }
                     // Minutes last and in the stronger tone, so they sit over the hour.
-                    canvas.drawText(text.hour, cx + stagger, cy - lift + size * 0.11f, tracked(c.tertiary))
+                    canvas.drawText(text.hour, cx + stagger, cy - lift + size * 0.11f, tracked(c.primary))
                     canvas.drawText(text.minute, cx - stagger, cy + lift + size * 0.11f, tracked(c.primary))
                 }
                 ClockFace.MOON -> Unit
@@ -438,7 +438,7 @@ object SundialRenderer {
 
     /** The overlap face: digit size, how far the minutes are pulled up into the hour, and the sideways stagger. */
     const val OVERLAP_TEXT = 0.34f
-    const val OVERLAP_PULL = 0.11f
+    const val OVERLAP_PULL = 0.18f
     const val OVERLAP_STAGGER = 0.05f
 
     /**
@@ -446,7 +446,7 @@ object SundialRenderer {
      * painted left to right, so each digit lands under the next, and the row below is drawn
      * after the row above: the whole block cascades.
      */
-    const val OVERLAP_TRACKING = -0.13f
+    const val OVERLAP_TRACKING = -0.22f
 
     /** A TextView line box is roughly this multiple of its text size with font padding off. */
     private const val LINE_HEIGHT = 1.16f

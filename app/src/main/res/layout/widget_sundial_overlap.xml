@@ -6,7 +6,11 @@
   so the rows genuinely interlock rather than merely touch. RemoteViews cannot set a
   margin from XML at runtime, but setViewLayoutMargin (API 31+) can, and it applies the
   value straight to topMargin without clamping, so a negative pulls the row up. The
-  minutes come second in the file, so they draw over the hour.
+  minutes come second in the file, so they draw over the hour. Each row also carries a
+  shadow in the widget's own surface colour, which haloes the digits so an overlapped one
+  is cut away from the one on top: that is what lets every digit share a colour and still
+  be read, as on the watch face this is modelled on. setShadowLayer is not remotable, so
+  it has to be declared here rather than set per update.
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widget_root"
@@ -39,6 +43,10 @@
                 android:format12Hour="hh"
                 android:format24Hour="HH"
                 android:includeFontPadding="false"
+                android:shadowColor="@color/widget_surface"
+                android:shadowDx="0"
+                android:shadowDy="0"
+                android:shadowRadius="8"
                 android:textColor="@color/widget_on_surface"
                 android:textSize="@dimen/widget_time_text_size"
                 android:visibility="gone" />
@@ -51,6 +59,10 @@
                 android:format12Hour="hh"
                 android:format24Hour="HH"
                 android:includeFontPadding="false"
+                android:shadowColor="@color/widget_surface"
+                android:shadowDx="0"
+                android:shadowDy="0"
+                android:shadowRadius="8"
                 android:textColor="@color/widget_on_surface"
                 android:textSize="@dimen/widget_time_text_size" />
             <TextClock
@@ -62,6 +74,10 @@
                 android:format12Hour="hh"
                 android:format24Hour="HH"
                 android:includeFontPadding="false"
+                android:shadowColor="@color/widget_surface"
+                android:shadowDx="0"
+                android:shadowDy="0"
+                android:shadowRadius="8"
                 android:textColor="@color/widget_on_surface"
                 android:textSize="@dimen/widget_time_text_size"
                 android:visibility="gone" />
@@ -75,6 +91,10 @@
                 android:format12Hour="hh"
                 android:format24Hour="HH"
                 android:includeFontPadding="false"
+                android:shadowColor="@color/widget_surface"
+                android:shadowDx="0"
+                android:shadowDy="0"
+                android:shadowRadius="8"
                 android:textColor="@color/widget_on_surface"
                 android:textSize="@dimen/widget_time_text_size"
                 android:visibility="gone" />
@@ -88,6 +108,10 @@
                 android:format12Hour="mm"
                 android:format24Hour="mm"
                 android:includeFontPadding="false"
+                android:shadowColor="@color/widget_surface"
+                android:shadowDx="0"
+                android:shadowDy="0"
+                android:shadowRadius="8"
                 android:textColor="@color/widget_on_surface"
                 android:textSize="@dimen/widget_time_text_size"
                 android:visibility="gone" />
@@ -100,6 +124,10 @@
                 android:format12Hour="mm"
                 android:format24Hour="mm"
                 android:includeFontPadding="false"
+                android:shadowColor="@color/widget_surface"
+                android:shadowDx="0"
+                android:shadowDy="0"
+                android:shadowRadius="8"
                 android:textColor="@color/widget_on_surface"
                 android:textSize="@dimen/widget_time_text_size" />
             <TextClock
@@ -111,6 +139,10 @@
                 android:format12Hour="mm"
                 android:format24Hour="mm"
                 android:includeFontPadding="false"
+                android:shadowColor="@color/widget_surface"
+                android:shadowDx="0"
+                android:shadowDy="0"
+                android:shadowRadius="8"
                 android:textColor="@color/widget_on_surface"
                 android:textSize="@dimen/widget_time_text_size"
                 android:visibility="gone" />
@@ -124,6 +156,10 @@
                 android:format12Hour="mm"
                 android:format24Hour="mm"
                 android:includeFontPadding="false"
+                android:shadowColor="@color/widget_surface"
+                android:shadowDx="0"
+                android:shadowDy="0"
+                android:shadowRadius="8"
                 android:textColor="@color/widget_on_surface"
                 android:textSize="@dimen/widget_time_text_size"
                 android:visibility="gone" />
