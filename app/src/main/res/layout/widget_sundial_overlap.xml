@@ -2,11 +2,11 @@
 <!--
   Overlap face: the hour and the minutes as two heavy rows that run into each other.
 
-  Both rows sit centred in the same FrameLayout, so they start on top of one another;
-  the updater then pushes them apart with padding, which is remotable where a negative
-  margin would not be. Padding on a centred wrap_content view shifts its text by half the
-  padding, so the hour is nudged up and out one way and the minutes the other. The minutes
-  come second in the file, so they draw over the hour.
+  A plain vertical LinearLayout, where the updater gives the minutes a NEGATIVE top margin
+  so the rows genuinely interlock rather than merely touch. RemoteViews cannot set a
+  margin from XML at runtime, but setViewLayoutMargin (API 31+) can, and it applies the
+  value straight to topMargin without clamping, so a negative pulls the row up. The
+  minutes come second in the file, so they draw over the hour.
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widget_root"
@@ -21,17 +21,20 @@
         android:scaleType="fitCenter"
         android:src="@drawable/widget_preview" />
 
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/widget_text_block"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center">
+        android:layout_gravity="center"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="vertical">
 
             <TextClock
                 android:id="@+id/overlap_hour_modern_regular"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="center_horizontal"
                 android:fontFamily="sans-serif"
                 android:format12Hour="hh"
                 android:format24Hour="HH"
@@ -43,7 +46,7 @@
                 android:id="@+id/overlap_hour_modern_bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="center_horizontal"
                 android:fontFamily="sans-serif-black"
                 android:format12Hour="hh"
                 android:format24Hour="HH"
@@ -54,7 +57,7 @@
                 android:id="@+id/overlap_hour_classic_regular"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="center_horizontal"
                 android:fontFamily="serif"
                 android:format12Hour="hh"
                 android:format24Hour="HH"
@@ -66,7 +69,7 @@
                 android:id="@+id/overlap_hour_classic_bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="center_horizontal"
                 android:fontFamily="serif"
                 android:textStyle="bold"
                 android:format12Hour="hh"
@@ -80,7 +83,7 @@
                 android:id="@+id/overlap_minute_modern_regular"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="center_horizontal"
                 android:fontFamily="sans-serif"
                 android:format12Hour="mm"
                 android:format24Hour="mm"
@@ -92,7 +95,7 @@
                 android:id="@+id/overlap_minute_modern_bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="center_horizontal"
                 android:fontFamily="sans-serif-black"
                 android:format12Hour="mm"
                 android:format24Hour="mm"
@@ -103,7 +106,7 @@
                 android:id="@+id/overlap_minute_classic_regular"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="center_horizontal"
                 android:fontFamily="serif"
                 android:format12Hour="mm"
                 android:format24Hour="mm"
@@ -115,7 +118,7 @@
                 android:id="@+id/overlap_minute_classic_bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="center_horizontal"
                 android:fontFamily="serif"
                 android:textStyle="bold"
                 android:format12Hour="mm"
@@ -124,6 +127,6 @@
                 android:textColor="@color/widget_on_surface"
                 android:textSize="@dimen/widget_time_text_size"
                 android:visibility="gone" />
-    </FrameLayout>
+    </LinearLayout>
 
 </FrameLayout>

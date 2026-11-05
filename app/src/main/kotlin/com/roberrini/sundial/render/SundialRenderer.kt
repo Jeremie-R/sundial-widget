@@ -314,7 +314,7 @@ object SundialRenderer {
                     canvas.drawText(text.minute, cx, cy + size * 0.235f, line)
                 }
                 ClockFace.OVERLAP -> {
-                    val lift = size * OVERLAP_LIFT / 2
+                    val lift = size * (OVERLAP_TEXT * LINE_HEIGHT - OVERLAP_PULL) / 2
                     val stagger = size * OVERLAP_STAGGER / 2
                     // Minutes last and in the stronger tone, so they sit over the hour.
                     canvas.drawText(text.hour, cx + stagger, cy - lift + size * 0.11f, paint(OVERLAP_TEXT, c.tertiary, family))
@@ -435,10 +435,13 @@ object SundialRenderer {
     /** Each stacked line is larger than the one-line time, since it carries half the digits. */
     const val STACKED_TEXT = 0.30f
 
-    /** The overlap face's digits, and how far its rows sit apart and stagger. */
+    /** The overlap face: digit size, how far the minutes are pulled up into the hour, and the sideways stagger. */
     const val OVERLAP_TEXT = 0.34f
-    private const val OVERLAP_LIFT = 0.28f
-    private const val OVERLAP_STAGGER = 0.10f
+    const val OVERLAP_PULL = 0.11f
+    const val OVERLAP_STAGGER = 0.05f
+
+    /** A TextView line box is roughly this multiple of its text size with font padding off. */
+    private const val LINE_HEIGHT = 1.16f
 
     /** Analog hand geometry, as fractions of the bitmap's edge. */
     private const val HOUR_HAND = 0.17f
