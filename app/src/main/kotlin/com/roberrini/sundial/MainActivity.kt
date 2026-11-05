@@ -112,7 +112,7 @@ class MainActivity : AppCompatActivity() {
                 illumination = moon.illumination,
                 waning = moon.waning,
                 lit = MaterialColors.getColor(moonIcon, androidx.appcompat.R.attr.colorPrimary),
-                dark = MaterialColors.getColor(moonIcon, com.google.android.material.R.attr.colorSurfaceVariant),
+                outline = MaterialColors.getColor(moonIcon, com.google.android.material.R.attr.colorOutline),
             ),
         )
         moonPhase.setText(moon.phaseName.label)

@@ -95,10 +95,10 @@ object SundialRenderer {
             illumination = moon.illumination,
             waning = moon.waning,
             lit = colors.primary,
-            dark = colors.outlineVariant,
+            outline = colors.outline,
             detailed = style.moonStyle == MoonStyle.DETAILED,
         )
-        canvas.drawBitmap(disc, width / 2f - disc.width / 2f, size * MOON_CENTRE_Y - disc.height / 2f, null)
+        canvas.drawBitmap(disc, width / 2f - disc.width / 2f, height / 2f - disc.height / 2f, null)
     }
 
     private class Face(
@@ -308,14 +308,12 @@ object SundialRenderer {
             when (style.face) {
                 ClockFace.ANALOG -> drawPreviewHands()
                 ClockFace.STACKED -> {
+                    // Two rows of two digits, close enough to read as one block filling the dial.
                     val line = paint(STACKED_TEXT, ts.time, family)
-                    canvas.drawText(text.hour, cx, cy - size * 0.02f, line)
-                    canvas.drawText(text.minute, cx, cy + size * 0.165f, line)
-                    canvas.drawText(text.date, cx, cy + size * 0.25f, paint(DATE_TEXT, ts.date, dateFace))
+                    canvas.drawText(text.hour, cx, cy - size * 0.015f, line)
+                    canvas.drawText(text.minute, cx, cy + size * 0.235f, line)
                 }
-                ClockFace.MOON -> canvas.drawText(
-                    text.time, cx, cy + size * 0.27f, paint(TIME_TEXT * 0.85f, ts.time, family),
-                )
+                ClockFace.MOON -> Unit
                 ClockFace.DIGITAL -> {
                     canvas.drawText(text.time, cx, cy + size * 0.06f, paint(TIME_TEXT, ts.time, family))
                     canvas.drawText(text.date, cx, cy + size * 0.155f, paint(DATE_TEXT, ts.date, dateFace))
@@ -428,16 +426,15 @@ object SundialRenderer {
     const val DATE_TEXT = 0.0625f
 
     /** Each stacked line is larger than the one-line time, since it carries half the digits. */
-    const val STACKED_TEXT = 0.195f
+    const val STACKED_TEXT = 0.30f
 
     /** Analog hand geometry, as fractions of the bitmap's edge. */
     private const val HOUR_HAND = 0.17f
     private const val MINUTE_HAND = 0.27f
     private const val HAND_TAIL = 0.04f
 
-    /** Where the moon face's disc sits, as fractions of the shorter edge. */
-    const val MOON_CENTRE_Y = 0.46f
-    const val MOON_RADIUS = 0.085f
+    /** The moon face is the moon: it fills the dial's middle, with no time or date. */
+    const val MOON_RADIUS = 0.22f
 
     /** Night sparkles: (time of day, radius multiplier, size fraction). Skipped if inside the twilight bar. */
     private val SPARKLES = listOf(

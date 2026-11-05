@@ -123,7 +123,8 @@ object SundialWidgetUpdater {
             when (style.face) {
                 ClockFace.ANALOG -> applyAnalog(frame, dialDp, density)
                 ClockFace.STACKED -> applyStacked(frame, dialDp)
-                ClockFace.DIGITAL, ClockFace.MOON -> applyDigital(frame, dialDp, density)
+                ClockFace.MOON -> applyMoon()
+                ClockFace.DIGITAL -> applyDigital(frame, dialDp)
             }
             if (frame.tapIntent != null) setOnClickPendingIntent(R.id.widget_root, frame.tapIntent)
         }
@@ -143,26 +144,23 @@ object SundialWidgetUpdater {
         setIcon(R.id.widget_analog, "setMinuteHand", Icon.createWithBitmap(icons.minute))
     }
 
-    private fun RemoteViews.applyDigital(frame: Frame, dialDp: Float, density: Float) {
-        val isMoon = frame.style.face == ClockFace.MOON
-        val fraction = if (isMoon) SundialRenderer.TIME_TEXT * 0.85f else SundialRenderer.TIME_TEXT
-        showTime(R.id.widget_date, TIME_VIEWS, frame, dialDp, fraction)
-        setViewVisibility(R.id.widget_date, if (isMoon) View.GONE else View.VISIBLE)
-        // The moon disc takes the upper half, so the time is padded clear of it.
-        val padTop = if (isMoon) ((dialDp * (SundialRenderer.MOON_CENTRE_Y + SundialRenderer.MOON_RADIUS)) * density).toInt() else 0
-        setViewPadding(R.id.widget_text_block, 0, padTop, 0, 0)
+    private fun RemoteViews.applyDigital(frame: Frame, dialDp: Float) {
+        showTime(R.id.widget_date, TIME_VIEWS, frame, dialDp, SundialRenderer.TIME_TEXT)
+        setViewVisibility(R.id.widget_date, View.VISIBLE)
+        setViewPadding(R.id.widget_text_block, 0, 0, 0, 0)
+    }
+
+    /** The moon face carries no text at all: the drawn disc is the whole face. */
+    private fun RemoteViews.applyMoon() {
+        for (id in TIME_VIEWS) setViewVisibility(id, View.GONE)
+        setViewVisibility(R.id.widget_date, View.GONE)
+        setViewPadding(R.id.widget_text_block, 0, 0, 0, 0)
     }
 
     private fun RemoteViews.applyStacked(frame: Frame, dialDp: Float) {
+        // One view holding both lines, so the four digits read as a single block with no date.
         val index = variantIndex(frame.style)
-        for ((i, id) in HOUR_VIEWS.withIndex()) styleTime(id, i == index, frame, dialDp, SundialRenderer.STACKED_TEXT)
-        for ((i, id) in MINUTE_VIEWS.withIndex()) styleTime(id, i == index, frame, dialDp, SundialRenderer.STACKED_TEXT)
-        setViewVisibility(R.id.widget_date, View.VISIBLE)
-        setTextColor(R.id.widget_date, frame.textStyle.date)
-        setTextViewTextSize(
-            R.id.widget_date, TypedValue.COMPLEX_UNIT_SP,
-            (dialDp * SundialRenderer.DATE_TEXT).coerceAtLeast(MIN_DATE_SP),
-        )
+        for ((i, id) in STACK_VIEWS.withIndex()) styleTime(id, i == index, frame, dialDp, SundialRenderer.STACKED_TEXT)
         setViewPadding(R.id.widget_text_block, 0, 0, 0, 0)
     }
 
@@ -223,13 +221,9 @@ object SundialWidgetUpdater {
         R.id.time_modern_regular, R.id.time_modern_bold,
         R.id.time_classic_regular, R.id.time_classic_bold,
     )
-    private val HOUR_VIEWS = listOf(
-        R.id.hour_modern_regular, R.id.hour_modern_bold,
-        R.id.hour_classic_regular, R.id.hour_classic_bold,
-    )
-    private val MINUTE_VIEWS = listOf(
-        R.id.minute_modern_regular, R.id.minute_modern_bold,
-        R.id.minute_classic_regular, R.id.minute_classic_bold,
+    private val STACK_VIEWS = listOf(
+        R.id.stack_modern_regular, R.id.stack_modern_bold,
+        R.id.stack_classic_regular, R.id.stack_classic_bold,
     )
 
     /** The analog hands are rendered at this multiple of the dial, then scaled by the clock view. */

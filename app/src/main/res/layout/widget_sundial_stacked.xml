@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Stacked face: the hour over the minutes. Hidden variants collapse, so the visible hour sits directly above the visible minute.
+  Stacked face: the hour over the minutes as one two-line TextClock, so lineSpacingMultiplier closes the gap between the rows and the four digits read as one block.
 
   The time is a TextClock so the launcher ticks it for us. A RemoteViews client cannot
   set a typeface at runtime, so every family/weight is a view here and the updater shows
@@ -29,105 +29,58 @@
         android:orientation="vertical">
 
         <TextClock
-            android:id="@+id/hour_modern_regular"
+            android:id="@+id/stack_modern_regular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
-            android:format12Hour="h"
-            android:format24Hour="HH"
+            android:format12Hour="h\nmm"
+            android:format24Hour="HH\nmm"
+            android:gravity="center"
             android:includeFontPadding="false"
+            android:lineSpacingMultiplier="0.76"
             android:textColor="@color/widget_on_surface"
             android:textSize="@dimen/widget_time_text_size"
             android:visibility="gone" />
         <TextClock
-            android:id="@+id/hour_modern_bold"
+            android:id="@+id/stack_modern_bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-black"
-            android:format12Hour="h"
-            android:format24Hour="HH"
+            android:format12Hour="h\nmm"
+            android:format24Hour="HH\nmm"
+            android:gravity="center"
             android:includeFontPadding="false"
+            android:lineSpacingMultiplier="0.76"
             android:textColor="@color/widget_on_surface"
             android:textSize="@dimen/widget_time_text_size" />
         <TextClock
-            android:id="@+id/hour_classic_regular"
+            android:id="@+id/stack_classic_regular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="serif"
-            android:format12Hour="h"
-            android:format24Hour="HH"
+            android:format12Hour="h\nmm"
+            android:format24Hour="HH\nmm"
+            android:gravity="center"
             android:includeFontPadding="false"
+            android:lineSpacingMultiplier="0.76"
             android:textColor="@color/widget_on_surface"
             android:textSize="@dimen/widget_time_text_size"
             android:visibility="gone" />
         <TextClock
-            android:id="@+id/hour_classic_bold"
+            android:id="@+id/stack_classic_bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="serif"
             android:textStyle="bold"
-            android:format12Hour="h"
-            android:format24Hour="HH"
+            android:format12Hour="h\nmm"
+            android:format24Hour="HH\nmm"
+            android:gravity="center"
             android:includeFontPadding="false"
+            android:lineSpacingMultiplier="0.76"
             android:textColor="@color/widget_on_surface"
             android:textSize="@dimen/widget_time_text_size"
             android:visibility="gone" />
 
-        <TextClock
-            android:id="@+id/minute_modern_regular"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif"
-            android:format12Hour="mm"
-            android:format24Hour="mm"
-            android:includeFontPadding="false"
-            android:textColor="@color/widget_on_surface"
-            android:textSize="@dimen/widget_time_text_size"
-            android:visibility="gone" />
-        <TextClock
-            android:id="@+id/minute_modern_bold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-black"
-            android:format12Hour="mm"
-            android:format24Hour="mm"
-            android:includeFontPadding="false"
-            android:textColor="@color/widget_on_surface"
-            android:textSize="@dimen/widget_time_text_size" />
-        <TextClock
-            android:id="@+id/minute_classic_regular"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="serif"
-            android:format12Hour="mm"
-            android:format24Hour="mm"
-            android:includeFontPadding="false"
-            android:textColor="@color/widget_on_surface"
-            android:textSize="@dimen/widget_time_text_size"
-            android:visibility="gone" />
-        <TextClock
-            android:id="@+id/minute_classic_bold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="serif"
-            android:textStyle="bold"
-            android:format12Hour="mm"
-            android:format24Hour="mm"
-            android:includeFontPadding="false"
-            android:textColor="@color/widget_on_surface"
-            android:textSize="@dimen/widget_time_text_size"
-            android:visibility="gone" />
-
-        <TextClock
-            android:id="@+id/widget_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
-            android:format12Hour="EEE d"
-            android:format24Hour="EEE d"
-            android:includeFontPadding="false"
-            android:textColor="@color/widget_on_surface_variant"
-            android:textSize="@dimen/widget_date_text_size" />
     </LinearLayout>
 
 </FrameLayout>
