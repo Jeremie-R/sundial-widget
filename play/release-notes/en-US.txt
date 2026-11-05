@@ -1,8 +1,8 @@
-First test build.
+Clock faces.
 
-• 24-hour dial: sunrise to sunset as an arc, twilight as a thin bar, a sun that moves through the day
-• Five styles, ten shapes, your wallpaper's colours
-• Real sun and moon times, worked out on the phone
-• Tap the widget to open the app, alarms or timers
+• Choose what fills the dial: Digital, Stacked (hour over minutes), Analog hands, or the Moon
+• Typeface and weight for the digital faces: Modern, Classic, Wide, Condensed
+• Hand weight for analog; a simple or detailed moon
+• The moon face shows tonight's real phase, drawn as it appears
 
-Worth checking: the time is still right after a reboot, it follows dark mode, and sunrise and sunset match what you see.
+Worth checking: that the analog hands keep time without the widget redrawing, and that each face follows your wallpaper in light and dark.
