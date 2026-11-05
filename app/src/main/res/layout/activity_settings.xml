@@ -38,6 +38,11 @@
 
         <include android:id="@+id/row_look" layout="@layout/row_setting" />
         <include android:id="@+id/row_shape" layout="@layout/row_setting" />
+        <include android:id="@+id/row_face" layout="@layout/row_setting" />
+        <include android:id="@+id/row_typeface" layout="@layout/row_setting" />
+        <include android:id="@+id/row_weight" layout="@layout/row_setting" />
+        <include android:id="@+id/row_hands" layout="@layout/row_setting" />
+        <include android:id="@+id/row_moon_style" layout="@layout/row_setting" />
         <include android:id="@+id/row_hue" layout="@layout/row_setting" />
         <include android:id="@+id/row_theme" layout="@layout/row_setting" />
         <include android:id="@+id/row_twilight" layout="@layout/row_setting" />

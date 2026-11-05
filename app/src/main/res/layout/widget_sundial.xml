@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  The whole face (background shape, arcs, sun) is a pre-rendered bitmap on @id/widget_dial.
-  Time and date are TextClocks so they stay exact between sun updates; the updater picks
-  the heavy or medium time view, and sets colours and sizes, per look.
+  Digital face: HH:MM with the date beneath. Also used by the moon face, which pads the block down to clear the moon and hides the date.
+
+  The time is a TextClock so the launcher ticks it for us. A RemoteViews client cannot
+  set a typeface at runtime, so every family/weight is a view here and the updater shows
+  one and hides the rest. Size, colour, stretch and tracking ARE remotable and are set
+  per widget size.
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widget_root"
@@ -18,6 +21,7 @@
         android:src="@drawable/widget_preview" />
 
     <LinearLayout
+        android:id="@+id/widget_text_block"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -25,7 +29,18 @@
         android:orientation="vertical">
 
         <TextClock
-            android:id="@+id/widget_time"
+            android:id="@+id/time_modern_regular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:format12Hour="h:mm"
+            android:format24Hour="HH:mm"
+            android:includeFontPadding="false"
+            android:textColor="@color/widget_on_surface"
+            android:textSize="@dimen/widget_time_text_size"
+            android:visibility="gone" />
+        <TextClock
+            android:id="@+id/time_modern_bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-black"
@@ -34,12 +49,23 @@
             android:includeFontPadding="false"
             android:textColor="@color/widget_on_surface"
             android:textSize="@dimen/widget_time_text_size" />
-
         <TextClock
-            android:id="@+id/widget_time_medium"
+            android:id="@+id/time_classic_regular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
+            android:fontFamily="serif"
+            android:format12Hour="h:mm"
+            android:format24Hour="HH:mm"
+            android:includeFontPadding="false"
+            android:textColor="@color/widget_on_surface"
+            android:textSize="@dimen/widget_time_text_size"
+            android:visibility="gone" />
+        <TextClock
+            android:id="@+id/time_classic_bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="serif"
+            android:textStyle="bold"
             android:format12Hour="h:mm"
             android:format24Hour="HH:mm"
             android:includeFontPadding="false"

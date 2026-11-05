@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Analog face: hands drawn by the system clock view over the sun dial bitmap.
+
+  The time is a TextClock so the launcher ticks it for us. A RemoteViews client cannot
+  set a typeface at runtime, so every family/weight is a view here and the updater shows
+  one and hides the rest. Size, colour, stretch and tracking ARE remotable and are set
+  per widget size.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/widget_dial"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:importantForAccessibility="no"
+        android:scaleType="fitCenter"
+        android:src="@drawable/widget_preview" />
+
+    <!--
+      AnalogClock is deprecated but still @RemoteView, and it ticks itself in the
+      launcher's process: the hands stay exact without the widget being redrawn. Its
+      dial and hands are set at runtime as Icons rendered by SundialRenderer.
+    -->
+    <AnalogClock
+        android:id="@+id/widget_analog"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:importantForAccessibility="no" />
+
+</FrameLayout>

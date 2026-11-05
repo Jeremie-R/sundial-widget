@@ -6,6 +6,7 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
 import androidx.annotation.ColorInt
+import androidx.core.graphics.ColorUtils
 import kotlin.math.abs
 
 /**
@@ -21,6 +22,7 @@ object MoonRenderer {
         waning: Boolean,
         @ColorInt lit: Int,
         @ColorInt dark: Int,
+        detailed: Boolean = false,
     ): Bitmap {
         require(sizePx > 0) { "Size must be positive, got $sizePx" }
         val bitmap = Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888)
@@ -52,14 +54,39 @@ object MoonRenderer {
             }
         }
         canvas.drawPath(path, fill(lit))
+        if (detailed) drawMaria(canvas, path, centre, radius, dark)
         canvas.restore()
         return bitmap
+    }
+
+    /**
+     * The dark plains and a few craters, clipped to the lit part so they appear only
+     * where the sun is actually falling on them.
+     */
+    private fun drawMaria(canvas: Canvas, litPath: Path, centre: Float, radius: Float, @ColorInt dark: Int) {
+        canvas.save()
+        canvas.clipPath(litPath)
+        val shade = fill(ColorUtils.setAlphaComponent(dark, 0x66))
+        for ((dx, dy, r) in MARIA) {
+            canvas.drawCircle(centre + dx * radius, centre + dy * radius, r * radius, shade)
+        }
+        canvas.restore()
     }
 
     private fun fill(color: Int) = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
         this.color = color
     }
+
+    /** Maria and craters as (x, y, radius) multiples of the disc radius, from the near side's look. */
+    private val MARIA = listOf(
+        Triple(-0.30f, -0.34f, 0.26f),
+        Triple(0.16f, -0.44f, 0.17f),
+        Triple(-0.44f, 0.10f, 0.20f),
+        Triple(0.30f, 0.28f, 0.22f),
+        Triple(-0.06f, 0.46f, 0.14f),
+        Triple(0.52f, -0.16f, 0.12f),
+    )
 
     private const val DISC_FRACTION = 0.92f
     private const val NOTHING_LIT = 0.004f

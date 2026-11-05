@@ -5,7 +5,12 @@ import android.content.res.Configuration
 import androidx.annotation.StringRes
 import androidx.core.content.edit
 import com.roberrini.sundial.R
+import com.roberrini.sundial.render.ClockFace
+import com.roberrini.sundial.render.ClockTypeface
+import com.roberrini.sundial.render.ClockWeight
+import com.roberrini.sundial.render.HandWeight
 import com.roberrini.sundial.render.Look
+import com.roberrini.sundial.render.MoonStyle
 import com.roberrini.sundial.render.NightSun
 import com.roberrini.sundial.render.Shape
 import com.roberrini.sundial.render.SundialColors
@@ -35,6 +40,11 @@ object AppearanceSettings {
     private const val PREFS = "sundial"
     private const val KEY_LOOK = "look"
     private const val KEY_SHAPE = "shape"
+    private const val KEY_FACE = "clock_face"
+    private const val KEY_TYPEFACE = "clock_typeface"
+    private const val KEY_WEIGHT = "clock_weight"
+    private const val KEY_HAND_WEIGHT = "hand_weight"
+    private const val KEY_MOON_STYLE = "moon_style"
     private const val KEY_TWILIGHT_BAR = "twilight_bar"
     private const val KEY_NIGHT_SUN = "night_sun"
     private const val KEY_SPARKLES = "sparkles"
@@ -50,6 +60,11 @@ object AppearanceSettings {
             twilightBar = p.enum(KEY_TWILIGHT_BAR, defaults.twilightBar),
             nightSun = p.enum(KEY_NIGHT_SUN, defaults.nightSun),
             sparkles = p.getBoolean(KEY_SPARKLES, defaults.sparkles),
+            face = p.enum(KEY_FACE, defaults.face),
+            typeface = p.enum(KEY_TYPEFACE, defaults.typeface),
+            weight = p.enum(KEY_WEIGHT, defaults.weight),
+            handWeight = p.enum(KEY_HAND_WEIGHT, defaults.handWeight),
+            moonStyle = p.enum(KEY_MOON_STYLE, defaults.moonStyle),
         )
     }
 
@@ -58,6 +73,11 @@ object AppearanceSettings {
     fun setTwilightBar(context: Context, bar: TwilightBar) = prefs(context).edit { putString(KEY_TWILIGHT_BAR, bar.name) }
     fun setNightSun(context: Context, nightSun: NightSun) = prefs(context).edit { putString(KEY_NIGHT_SUN, nightSun.name) }
     fun setSparkles(context: Context, on: Boolean) = prefs(context).edit { putBoolean(KEY_SPARKLES, on) }
+    fun setFace(context: Context, face: ClockFace) = prefs(context).edit { putString(KEY_FACE, face.name) }
+    fun setTypeface(context: Context, typeface: ClockTypeface) = prefs(context).edit { putString(KEY_TYPEFACE, typeface.name) }
+    fun setWeight(context: Context, weight: ClockWeight) = prefs(context).edit { putString(KEY_WEIGHT, weight.name) }
+    fun setHandWeight(context: Context, hands: HandWeight) = prefs(context).edit { putString(KEY_HAND_WEIGHT, hands.name) }
+    fun setMoonStyle(context: Context, style: MoonStyle) = prefs(context).edit { putString(KEY_MOON_STYLE, style.name) }
 
     fun huePreset(context: Context): HuePreset = prefs(context).enum(KEY_HUE, HuePreset.DEVICE)
     fun setHuePreset(context: Context, preset: HuePreset) = prefs(context).edit { putString(KEY_HUE, preset.name) }

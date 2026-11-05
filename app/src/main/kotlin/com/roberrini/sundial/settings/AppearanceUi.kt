@@ -15,7 +15,12 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.materialswitch.MaterialSwitch
 import com.roberrini.sundial.R
+import com.roberrini.sundial.render.ClockFace
+import com.roberrini.sundial.render.ClockTypeface
+import com.roberrini.sundial.render.ClockWeight
 import com.roberrini.sundial.render.DialPreview
+import com.roberrini.sundial.render.HandWeight
+import com.roberrini.sundial.render.MoonStyle
 import com.roberrini.sundial.render.Look
 import com.roberrini.sundial.render.NightSun
 import com.roberrini.sundial.render.Shape
@@ -41,6 +46,11 @@ class AppearanceUi(
     private val rowShape = Row(root.findViewById(R.id.row_shape), R.string.row_shape) { pickShape() }
     private val rowHue = Row(root.findViewById(R.id.row_hue), R.string.row_hue) { pickHue() }
     private val rowTheme = Row(root.findViewById(R.id.row_theme), R.string.row_theme) { pickTheme() }
+    private val rowFace = Row(root.findViewById(R.id.row_face), R.string.row_face) { pickFace() }
+    private val rowTypeface = Row(root.findViewById(R.id.row_typeface), R.string.row_typeface) { pickTypeface() }
+    private val rowWeight = Row(root.findViewById(R.id.row_weight), R.string.row_weight) { pickWeight() }
+    private val rowHands = Row(root.findViewById(R.id.row_hands), R.string.row_hands) { pickHands() }
+    private val rowMoonStyle = Row(root.findViewById(R.id.row_moon_style), R.string.row_moon_style) { pickMoonStyle() }
     private val rowTwilight = Row(root.findViewById(R.id.row_twilight), R.string.row_twilight) { pickTwilightBar() }
     private val rowNight = Row(root.findViewById(R.id.row_night), R.string.row_night) { pickNightSun() }
     private val sparkles: MaterialSwitch = root.findViewById(R.id.sparkles_switch)
@@ -60,6 +70,16 @@ class AppearanceUi(
         rowShape.value(context.getString(style.shape.label))
         rowHue.value(context.getString(AppearanceSettings.huePreset(context).label))
         rowTheme.value(context.getString(AppearanceSettings.themeMode(context).label))
+        rowFace.value(context.getString(style.face.label))
+        // Sub-options belong to one face each, so the list only shows what applies.
+        rowTypeface.value(context.getString(style.typeface.label))
+        rowTypeface.show(style.face.isDigital)
+        rowWeight.value(context.getString(style.weight.label))
+        rowWeight.show(style.face.isDigital)
+        rowHands.value(context.getString(style.handWeight.label))
+        rowHands.show(style.face == ClockFace.ANALOG)
+        rowMoonStyle.value(context.getString(style.moonStyle.label))
+        rowMoonStyle.show(style.face == ClockFace.MOON)
         rowTwilight.value(context.getString(style.twilightBar.label))
         rowNight.value(context.getString(style.nightSun.label))
         sparkles.isChecked = style.sparkles
@@ -81,6 +101,43 @@ class AppearanceUi(
         }
         gridDialog(R.string.row_style, options) { AppearanceSettings.setLook(context, Look.entries[it]); changed() }
     }
+
+    private fun pickFace() {
+        val style = AppearanceSettings.style(context)
+        val colors = AppearanceSettings.colors(context)
+        val options = ClockFace.entries.map { face ->
+            Thumb(context.getString(face.label), renderSample(dp(THUMB_DP), style.copy(face = face), colors), face == style.face)
+        }
+        gridDialog(R.string.row_face, options) { AppearanceSettings.setFace(context, ClockFace.entries[it]); changed() }
+    }
+
+    private fun pickTypeface() {
+        val style = AppearanceSettings.style(context)
+        val colors = AppearanceSettings.colors(context)
+        val options = ClockTypeface.entries.map { typeface ->
+            Thumb(
+                context.getString(typeface.label),
+                renderSample(dp(THUMB_DP), style.copy(typeface = typeface), colors),
+                typeface == style.typeface,
+            )
+        }
+        gridDialog(R.string.row_typeface, options) { AppearanceSettings.setTypeface(context, ClockTypeface.entries[it]); changed() }
+    }
+
+    private fun pickWeight() = choiceDialog(
+        R.string.row_weight, ClockWeight.entries.map { context.getString(it.label) },
+        ClockWeight.entries.indexOf(AppearanceSettings.style(context).weight),
+    ) { AppearanceSettings.setWeight(context, ClockWeight.entries[it]); changed() }
+
+    private fun pickHands() = choiceDialog(
+        R.string.row_hands, HandWeight.entries.map { context.getString(it.label) },
+        HandWeight.entries.indexOf(AppearanceSettings.style(context).handWeight),
+    ) { AppearanceSettings.setHandWeight(context, HandWeight.entries[it]); changed() }
+
+    private fun pickMoonStyle() = choiceDialog(
+        R.string.row_moon_style, MoonStyle.entries.map { context.getString(it.label) },
+        MoonStyle.entries.indexOf(AppearanceSettings.style(context).moonStyle),
+    ) { AppearanceSettings.setMoonStyle(context, MoonStyle.entries[it]); changed() }
 
     private fun pickShape() {
         val style = AppearanceSettings.style(context)
@@ -177,12 +234,14 @@ class AppearanceUi(
     private fun dp(value: Float): Int = (value * context.resources.displayMetrics.density).roundToInt()
 
     private inner class Row(view: View, title: Int, onClick: () -> Unit) {
+        private val root = view
         private val valueView: TextView = view.findViewById(R.id.row_value)
         init {
             view.findViewById<TextView>(R.id.row_title).text = context.getString(title)
             view.setOnClickListener { onClick() }
         }
         fun value(text: String) { valueView.text = text }
+        fun show(visible: Boolean) { root.visibility = if (visible) View.VISIBLE else View.GONE }
     }
 
     private companion object {

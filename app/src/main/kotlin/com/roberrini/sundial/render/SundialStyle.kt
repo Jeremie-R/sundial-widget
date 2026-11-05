@@ -48,4 +48,9 @@ data class SundialStyle(
     val twilightBar: TwilightBar = TwilightBar.PLAIN,
     val nightSun: NightSun = NightSun.OUTLINE,
     val sparkles: Boolean = false,
+    val face: ClockFace = ClockFace.DIGITAL,
+    val typeface: ClockTypeface = ClockTypeface.MODERN,
+    val weight: ClockWeight = ClockWeight.BOLD,
+    val handWeight: HandWeight = HandWeight.REGULAR,
+    val moonStyle: MoonStyle = MoonStyle.SIMPLE,
 )
