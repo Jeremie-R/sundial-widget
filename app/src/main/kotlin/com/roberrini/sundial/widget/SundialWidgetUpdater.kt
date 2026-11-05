@@ -172,12 +172,14 @@ object SundialWidgetUpdater {
             styleTime(id, i == index, frame, dialDp, SundialRenderer.OVERLAP_TEXT)
             if (i != index) continue
             setTextColor(id, frame.colors.tertiary)
+            setFloat(id, "setLetterSpacing", SundialRenderer.OVERLAP_TRACKING)
             setViewLayoutMargin(id, RemoteViews.MARGIN_START, stagger, TypedValue.COMPLEX_UNIT_DIP)
         }
         for ((i, id) in OVERLAP_MINUTE_VIEWS.withIndex()) {
             styleTime(id, i == index, frame, dialDp, SundialRenderer.OVERLAP_TEXT)
             if (i != index) continue
             setTextColor(id, frame.colors.primary)
+            setFloat(id, "setLetterSpacing", SundialRenderer.OVERLAP_TRACKING)
             setViewLayoutMargin(id, RemoteViews.MARGIN_TOP, pull, TypedValue.COMPLEX_UNIT_DIP)
             setViewLayoutMargin(id, RemoteViews.MARGIN_END, stagger, TypedValue.COMPLEX_UNIT_DIP)
         }
