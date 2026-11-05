@@ -313,14 +313,6 @@ object SundialRenderer {
                     canvas.drawText(text.hour, cx, cy - size * 0.015f, line)
                     canvas.drawText(text.minute, cx, cy + size * 0.235f, line)
                 }
-                ClockFace.OVERLAP -> {
-                    val lift = size * (OVERLAP_TEXT * LINE_HEIGHT - OVERLAP_PULL) / 2
-                    val stagger = size * OVERLAP_STAGGER / 2
-                    val tracked = { color: Int -> paint(OVERLAP_TEXT, color, family).apply { letterSpacing = OVERLAP_TRACKING } }
-                    // Minutes last and in the stronger tone, so they sit over the hour.
-                    canvas.drawText(text.hour, cx + stagger, cy - lift + size * 0.11f, tracked(c.primary))
-                    canvas.drawText(text.minute, cx - stagger, cy + lift + size * 0.11f, tracked(c.primary))
-                }
                 ClockFace.MOON -> Unit
                 ClockFace.DIGITAL -> {
                     canvas.drawText(text.time, cx, cy + size * 0.06f, paint(TIME_TEXT, ts.time, family))
@@ -435,21 +427,6 @@ object SundialRenderer {
 
     /** Each stacked line is larger than the one-line time, since it carries half the digits. */
     const val STACKED_TEXT = 0.30f
-
-    /** The overlap face: digit size, how far the minutes are pulled up into the hour, and the sideways stagger. */
-    const val OVERLAP_TEXT = 0.34f
-    const val OVERLAP_PULL = 0.18f
-    const val OVERLAP_STAGGER = 0.05f
-
-    /**
-     * Negative tracking, so the two digits in a row overlap each other as well. Glyphs are
-     * painted left to right, so each digit lands under the next, and the row below is drawn
-     * after the row above: the whole block cascades.
-     */
-    const val OVERLAP_TRACKING = -0.22f
-
-    /** A TextView line box is roughly this multiple of its text size with font padding off. */
-    private const val LINE_HEIGHT = 1.16f
 
     /** Analog hand geometry, as fractions of the bitmap's edge. */
     private const val HOUR_HAND = 0.17f

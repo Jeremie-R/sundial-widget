@@ -123,7 +123,6 @@ object SundialWidgetUpdater {
             when (style.face) {
                 ClockFace.ANALOG -> applyAnalog(frame, dialDp, density)
                 ClockFace.STACKED -> applyStacked(frame, dialDp)
-                ClockFace.OVERLAP -> applyOverlap(frame, dialDp)
                 ClockFace.MOON -> applyMoon()
                 ClockFace.DIGITAL -> applyDigital(frame, dialDp)
             }
@@ -133,7 +132,6 @@ object SundialWidgetUpdater {
 
     private fun layoutFor(face: ClockFace): Int = when (face) {
         ClockFace.STACKED -> R.layout.widget_sundial_stacked
-        ClockFace.OVERLAP -> R.layout.widget_sundial_overlap
         ClockFace.ANALOG -> R.layout.widget_sundial_analog
         ClockFace.DIGITAL, ClockFace.MOON -> R.layout.widget_sundial
     }
@@ -157,32 +155,6 @@ object SundialWidgetUpdater {
         for (id in TIME_VIEWS) setViewVisibility(id, View.GONE)
         setViewVisibility(R.id.widget_date, View.GONE)
         setViewPadding(R.id.widget_text_block, 0, 0, 0, 0)
-    }
-
-    /**
-     * Pulls the minutes up into the hour with a negative top margin, and staggers the rows
-     * sideways, so the two interlock. Two tones, because same-coloured digits merge into a
-     * blob where they cross.
-     */
-    private fun RemoteViews.applyOverlap(frame: Frame, dialDp: Float) {
-        val index = variantIndex(frame.style)
-        val pull = -dialDp * SundialRenderer.OVERLAP_PULL
-        val stagger = dialDp * SundialRenderer.OVERLAP_STAGGER
-        for ((i, id) in OVERLAP_HOUR_VIEWS.withIndex()) {
-            styleTime(id, i == index, frame, dialDp, SundialRenderer.OVERLAP_TEXT)
-            if (i != index) continue
-            setTextColor(id, frame.colors.primary)
-            setFloat(id, "setLetterSpacing", SundialRenderer.OVERLAP_TRACKING)
-            setViewLayoutMargin(id, RemoteViews.MARGIN_START, stagger, TypedValue.COMPLEX_UNIT_DIP)
-        }
-        for ((i, id) in OVERLAP_MINUTE_VIEWS.withIndex()) {
-            styleTime(id, i == index, frame, dialDp, SundialRenderer.OVERLAP_TEXT)
-            if (i != index) continue
-            setTextColor(id, frame.colors.primary)
-            setFloat(id, "setLetterSpacing", SundialRenderer.OVERLAP_TRACKING)
-            setViewLayoutMargin(id, RemoteViews.MARGIN_TOP, pull, TypedValue.COMPLEX_UNIT_DIP)
-            setViewLayoutMargin(id, RemoteViews.MARGIN_END, stagger, TypedValue.COMPLEX_UNIT_DIP)
-        }
     }
 
     private fun RemoteViews.applyStacked(frame: Frame, dialDp: Float) {
@@ -248,14 +220,6 @@ object SundialWidgetUpdater {
     private val TIME_VIEWS = listOf(
         R.id.time_modern_regular, R.id.time_modern_bold,
         R.id.time_classic_regular, R.id.time_classic_bold,
-    )
-    private val OVERLAP_HOUR_VIEWS = listOf(
-        R.id.overlap_hour_modern_regular, R.id.overlap_hour_modern_bold,
-        R.id.overlap_hour_classic_regular, R.id.overlap_hour_classic_bold,
-    )
-    private val OVERLAP_MINUTE_VIEWS = listOf(
-        R.id.overlap_minute_modern_regular, R.id.overlap_minute_modern_bold,
-        R.id.overlap_minute_classic_regular, R.id.overlap_minute_classic_bold,
     )
 
     private val STACK_VIEWS = listOf(
