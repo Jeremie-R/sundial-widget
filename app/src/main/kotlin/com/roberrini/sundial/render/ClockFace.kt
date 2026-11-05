@@ -11,6 +11,9 @@ enum class ClockFace(@param:StringRes val label: Int) {
     /** The hour over the minutes, with the date beneath. */
     STACKED(R.string.face_stacked),
 
+    /** The hour and minutes as two heavy rows that overlap and stagger into each other. */
+    OVERLAP(R.string.face_overlap),
+
     /** Hands, ticked by the launcher itself. */
     ANALOG(R.string.face_analog),
 

@@ -54,7 +54,7 @@ object DialPreview {
         return SundialRenderer.TextOverlay(
             time = now.format(DateTimeFormatter.ofPattern(pattern)),
             date = "${today.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())} ${today.dayOfMonth}",
-            hour = now.format(DateTimeFormatter.ofPattern(if (DateFormat.is24HourFormat(context)) "HH" else "h")),
+            hour = now.format(DateTimeFormatter.ofPattern(if (DateFormat.is24HourFormat(context)) "HH" else "hh")),
             minute = now.format(DateTimeFormatter.ofPattern("mm")),
             typeface = typefaceFor(context, style),
         )

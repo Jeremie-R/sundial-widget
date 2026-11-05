@@ -17,6 +17,7 @@
     <string name="row_moon_style">Moon style</string>
     <string name="face_digital">Digital</string>
     <string name="face_stacked">Stacked</string>
+    <string name="face_overlap">Overlap</string>
     <string name="face_analog">Analog</string>
     <string name="face_moon">Moon</string>
     <string name="typeface_modern">Modern</string>
